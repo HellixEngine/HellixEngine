@@ -2,7 +2,8 @@
 
 #include <memory>
 #include "engine/core/window.hpp"
-
+#include "engine/events/event.hpp"
+#include "engine/events/application_event.hpp"
 namespace hellix::core {
 
     class Application {
@@ -16,14 +17,17 @@ namespace hellix::core {
         void run();
         void close();
 
+        virtual void onEvent(events::Event& e);
+
         virtual void onUpdate() {}
         virtual void onRender() {}
-        virtual void onEvent(events::Event& e) {}
 
         [[nodiscard]] Window& getWindow() { return *m_window; }
         [[nodiscard]] static Application& get() { return *s_instance; }
 
     private:
+        bool onWindowClose(events::WindowCloseEvent& e);
+        bool onWindowResize(events::WindowResizeEvent& e);
         static Application* s_instance;
         bool m_running = true;
         std::unique_ptr<Window> m_window;

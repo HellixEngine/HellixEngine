@@ -4,6 +4,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "engine/events/application_event.hpp"
+#include "engine/events/key_event.hpp"
+#include "engine/events/mouse_event.hpp"
+
 namespace hellix::core {
 
     static bool s_glfwInitialized = false;
@@ -22,9 +26,9 @@ namespace hellix::core {
         : m_data{props.title, props.width, props.height} {
         
         if (!s_glfwInitialized) {
-            glfwSetErrorCallback(glfwErrorCallback);
             int success = glfwInit();
             if (!success) {
+                glfwSetErrorCallback(glfwErrorCallback);
                 std::cerr << "[HellixCore] Falha ao inicializar GLFW!\n";
                 return;
             }
@@ -66,8 +70,6 @@ namespace hellix::core {
         // Registro dos Callbacks GLFW -> Hellix
         // ==========================================
 
-        //adicionando comentarios de espera para quando os events forem adicionado ao projeto
-
         // 1. Redimensionamento da Janela
         glfwSetWindowSizeCallback(m_window.get(), [](GLFWwindow* window, int width, int height) {
             auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
@@ -76,18 +78,16 @@ namespace hellix::core {
 
             glViewport(0, 0, width, height);//redefine a viewport quando a janela for redimensionada
 
-            // Exemplo com evento tipado:
-            // events::WindowResizeEvent event(width, height);
-            // if (data->eventCallback) data->eventCallback(event);
+            events::WindowResizeEvent event(width, height);
+            if (data->eventCallback) data->eventCallback(event);
         });
 
         // 2. Fechamento da Janela
         glfwSetWindowCloseCallback(m_window.get(), [](GLFWwindow* window) {
             auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
-            // Exemplo com evento tipado:
-            // events::WindowCloseEvent event;
-            // if (data->eventCallback) data->eventCallback(event);
+            events::WindowCloseEvent event;
+            if (data->eventCallback) data->eventCallback(event);
         });
 
         // 3. Teclado
@@ -96,18 +96,18 @@ namespace hellix::core {
 
             switch (action) {
                 case GLFW_PRESS: {
-                    // events::KeyPressedEvent event(key, 0);
-                    // if (data->eventCallback) data->eventCallback(event);
+                    events::KeyPressedEvent event(key, 0);
+                    if (data->eventCallback) data->eventCallback(event);
                     break;
                 }
                 case GLFW_RELEASE: {
-                    // events::KeyReleasedEvent event(key);
-                    // if (data->eventCallback) data->eventCallback(event);
+                    events::KeyReleasedEvent event(key);
+                    if (data->eventCallback) data->eventCallback(event);
                     break;
                 }
                 case GLFW_REPEAT: {
-                    // events::KeyPressedEvent event(key, 1);
-                    // if (data->eventCallback) data->eventCallback(event);
+                    events::KeyPressedEvent event(key, 1);
+                    if (data->eventCallback) data->eventCallback(event);
                     break;
                 }
             }
@@ -119,15 +119,16 @@ namespace hellix::core {
 
             switch (action) {
                 case GLFW_PRESS: {
-                    // events::MouseButtonPressedEvent event(button);
-                    // if (data->eventCallback) data->eventCallback(event);
+                    events::MouseButtonPressedEvent event(button);
+                    if (data->eventCallback) data->eventCallback(event);
                     break;
                 }
                 case GLFW_RELEASE: {
-                    // events::MouseButtonReleasedEvent event(button);
-                    // if (data->eventCallback) data->eventCallback(event);
+                    events::MouseButtonReleasedEvent event(button);
+                    if (data->eventCallback) data->eventCallback(event);
                     break;
                 }
+                default: break;
             }
         });
 
@@ -135,16 +136,16 @@ namespace hellix::core {
         glfwSetCursorPosCallback(m_window.get(), [](GLFWwindow* window, double xpos, double ypos) {
             auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
-            // events::MouseMovedEvent event(static_cast<float>(xpos), static_cast<float>(ypos));
-            // if (data->eventCallback) data->eventCallback(event);
+            events::MouseMovedEvent event(static_cast<float>(xpos), static_cast<float>(ypos));
+            if (data->eventCallback) data->eventCallback(event);
         });
 
         // 6. Scroll do Mouse
         glfwSetScrollCallback(m_window.get(), [](GLFWwindow* window, double xoffset, double yoffset) {
             auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
-            // events::MouseScrolledEvent event(static_cast<float>(xoffset), static_cast<float>(yoffset));
-            // if (data->eventCallback) data->eventCallback(event);
+            events::MouseScrolledEvent event(static_cast<float>(xoffset), static_cast<float>(yoffset));
+            if (data->eventCallback) data->eventCallback(event);
         });
     }
 

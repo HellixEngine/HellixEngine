@@ -1,12 +1,39 @@
-/**
- * @file application_event.hpp
- * @author Julio Daniel
- * @brief ${END}
- * @date 17/09/2026
- *
- * Copyright (c) 2026 Julio Daniel. All rights reserved. / Todos os direitos reservados.
- */
-#ifndef HELLIXENGINE_APPLICATION_EVENT_HPP
-#define HELLIXENGINE_APPLICATION_EVENT_HPP
+#pragma once
 
-#endif //HELLIXENGINE_APPLICATION_EVENT_HPP
+#include <cstdint>
+
+#include "engine/events/event.hpp"
+#include <sstream>
+
+namespace hellix::events {
+
+    class WindowResizeEvent : public Event {
+    public:
+        WindowResizeEvent(uint32_t width, uint32_t height)
+            : m_width(width), m_height(height) {}
+
+        [[nodiscard]] uint32_t getWidth() const { return m_width; }
+        [[nodiscard]] uint32_t getHeight() const { return m_height; }
+
+        [[nodiscard]] std::string toString() const override {
+            std::stringstream ss;
+            ss << "WindowResizeEvent: " << m_width << ", " << m_height;
+            return ss.str();
+        }
+
+        EVENT_CLASS_TYPE(WindowResize)
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
+
+    private:
+        uint32_t m_width, m_height;
+    };
+
+    class WindowCloseEvent : public Event {
+    public:
+        WindowCloseEvent() = default;
+
+        EVENT_CLASS_TYPE(WindowClose)
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
+    };
+
+}
