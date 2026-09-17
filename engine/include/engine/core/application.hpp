@@ -18,6 +18,7 @@ namespace hellix::core {
 
         virtual void onUpdate() {}
         virtual void onRender() {}
+        virtual void onEvent(events::Event& e) {}
 
         [[nodiscard]] Window& getWindow() { return *m_window; }
         [[nodiscard]] static Application& get() { return *s_instance; }

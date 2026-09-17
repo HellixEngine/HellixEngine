@@ -28,7 +28,8 @@ namespace hellix::core {
 
     Application::Application(const std::string& name) {
         s_instance = this;
-        m_window = std::make_unique<Window>(WindowProps(name, 1280, 720));
+        m_window = std::make_unique<Window>(WindowProps(name, 1280, 720));//cria uma janela com smartPointer unique
+        m_window->setEventCallback([this](events::Event& e) { this->onEvent(e); });// Define o callback de eventos da janela para chamar o método onEvent da aplicação
         initQuadPipeline();
     }
 
