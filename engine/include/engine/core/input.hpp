@@ -1,12 +1,17 @@
-/**
- * @file input.hpp
- * @author Julio Daniel
- * @brief ${END}
- * @date 17/09/2026
- *
- * Copyright (c) 2026 Julio Daniel. All rights reserved. / Todos os direitos reservados.
- */
-#ifndef HELLIXENGINE_INPUT_HPP
-#define HELLIXENGINE_INPUT_HPP
+#pragma once
 
-#endif //HELLIXENGINE_INPUT_HPP
+#include "key_codes.hpp"
+#include <utility>
+
+namespace hellix::core::input {
+
+    class Input {
+    public:
+        [[nodiscard]] static bool isKeyPressed(KeyCode key);
+        [[nodiscard]] static bool isMouseButtonPressed(MouseCode button);
+        [[nodiscard]] static std::pair<float, float> getMousePosition();
+        [[nodiscard]] static float getMouseX();
+        [[nodiscard]] static float getMouseY();
+    };
+
+}

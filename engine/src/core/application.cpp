@@ -46,7 +46,7 @@ namespace hellix::core {
         });
 
         // Log para depurar se os eventos estão chegando
-        std::cout << "[Event] " << e.toString() << "\n";
+        //std::cout << "[Event] " << e.toString() << "\n";
     }
 
     bool Application::onWindowClose(events::WindowCloseEvent& e) {

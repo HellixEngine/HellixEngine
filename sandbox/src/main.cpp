@@ -12,21 +12,18 @@ public:
         std::cout << "[Sandbox] Finalizado.\n";
     }
 
+
     void onUpdate() override {
+
+        if (hlx::Input::isKeyPressed(hlx::Key::H_W)) {
+            std::cout << "[Sandbox] Tecla W pressionada.\n";
+        }
+        if (hlx::Input::isMouseButtonPressed(hlx::Mouse::H_BUTTON_LEFT)) {
+            std::cout << "[Sandbox] Botão esquerdo do mouse pressionado.\n";
+        }
 
     }
     void onRender() override {}
-    void onEvent(hellix::events::Event &e) {
-        Application::onEvent(e);
-        auto dispatcher = hellix::events::EventDispatcher(e);
-
-        dispatcher.dispatch<hellix::events::KeyPressedEvent>([this](hellix::events::KeyPressedEvent& event) {
-            if (event.getKeyCode() == static_cast<int>(hellix::events::Keys::H_W)) {
-                std::cout << "[Sandbox] Tecla W pressionada. Encerrando aplicação...\n";
-            }
-            return true;
-        });
-    }
 };
 
 int main() {
