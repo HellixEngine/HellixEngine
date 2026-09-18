@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "engine/core/log.hpp"
 #include "engine/events/application_event.hpp"
 #include "engine/events/key_event.hpp"
 #include "engine/events/mouse_event.hpp"
@@ -13,7 +14,8 @@ namespace hellix::core {
     static bool s_glfwInitialized = false;
 
     static void glfwErrorCallback(int error, const char* description) {
-        std::cerr << "[HellixCore] GLFW Error (" << error << "): " << description << "\n";
+        HELLIX_ERROR("GLFW Error ({0}): {1}", error, description);
+
     }
 
     void Window::WindowDeleter::operator()(GLFWwindow* window) const {
@@ -29,7 +31,7 @@ namespace hellix::core {
             int success = glfwInit();
             if (!success) {
                 glfwSetErrorCallback(glfwErrorCallback);
-                std::cerr << "[HellixCore] Falha ao inicializar GLFW!\n";
+                HELLIX_ERROR("Falha ao inicializar GLFW!");
                 return;
             }
             s_glfwInitialized = true;
@@ -48,7 +50,7 @@ namespace hellix::core {
         );
 
         if (!rawWindow) {
-            std::cerr << "[HellixCore] Falha ao criar a janela GLFW!\n";
+            HELLIX_ERROR("Falha ao criar a janela GLFW!");
             return;
         }
 
@@ -56,7 +58,7 @@ namespace hellix::core {
         glfwMakeContextCurrent(rawWindow);
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-            std::cerr << "[HellixCore] Falha ao inicializar GLAD (OpenGL)!\n";
+            HELLIX_ERROR("Falha ao inicializar GLAD!");
             return;
         }
 

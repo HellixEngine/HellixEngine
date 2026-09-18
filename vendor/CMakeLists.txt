@@ -53,6 +53,6 @@ target_include_directories(spdlog INTERFACE
 )
 
 # Força o modo header-only para os consumidores
-target_compile_definitions(spdlog INTERFACE
-        SPDLOG_HEADER_ONLY
-)
+#target_compile_definitions(spdlog INTERFACE
+#        SPDLOG_HEADER_ONLY
+#)

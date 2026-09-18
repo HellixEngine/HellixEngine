@@ -5,22 +5,25 @@
 class SandboxApp : public hellix::core::Application {
 public:
     SandboxApp() : Application("Hellix Sandbox - Teste de Render 2D") {
-        std::cout << "[Sandbox] Inicializado com sucesso!\n";
+        HLX_INFO("Sandbox iniciado com sucesso!");
     }
 
     ~SandboxApp() override {
-        std::cout << "[Sandbox] Finalizado.\n";
+        HLX_INFO("Sandbox finalizado com sucesso!");
     }
 
 
     void onUpdate(hlx::TimeStep ts) override {
+        HLX_INFO("Atualizando o Sandbox. Delta Time: {0} segundos", ts.GetSeconds());
+        HLX_INFO("Pressione a tecla W para ver a mensagem no console.");
 
         if (hlx::Input::isKeyPressed(hlx::Key::H_W)) {
-            std::cout << "[Sandbox] Tecla W pressionada.\n";
+            HLX_INFO("Tecla W pressionada.");
         }
         if (hlx::Input::isMouseButtonPressed(hlx::Mouse::H_BUTTON_LEFT)) {
-            std::cout << "[Sandbox] Botão esquerdo do mouse pressionado.\n";
+            HLX_INFO("Botão esquerdo do mouse pressionado.");
         }
+
 
     }
     void onRender() override {}

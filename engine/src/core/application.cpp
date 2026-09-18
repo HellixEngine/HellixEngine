@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "engine/core/log.hpp"
 #include "engine/core/timestep.hpp"
 
 namespace hellix::core {
@@ -29,6 +30,9 @@ namespace hellix::core {
     )";
 
     Application::Application(const std::string& name) {
+
+        Log::init();
+        HELLIX_INFO("HellixEngine initialized successfully!");
         s_instance = this;
         m_window = std::make_unique<Window>(WindowProps(name, 1280, 720));//cria uma janela com smartPointer unique
         m_window->setEventCallback([this](events::Event& e) { this->onEvent(e); });//conecta a janela ao despacho da Hellix

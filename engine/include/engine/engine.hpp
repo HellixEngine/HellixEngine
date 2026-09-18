@@ -2,8 +2,10 @@
 
 #include "engine/core/application.hpp"
 #include "engine/core/window.hpp"
+#include "engine/core/log.hpp"
 #include "engine/events/key_event.hpp"
 #include "engine/core/input.hpp"
+
 
 /**
  * @brief The main namespace for the Hellix Engine to use in game development.
@@ -18,5 +20,6 @@ namespace hlx {
     using Mouse = core::input::MouseCode;
     using Input = core::input::Input;
     using TimeStep = core::Timestep;
+    using Logger = core::Log;
 }
 
