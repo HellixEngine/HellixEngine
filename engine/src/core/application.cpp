@@ -29,6 +29,17 @@ namespace hellix::core {
         }
     )";
 
+    const char* const banner = R"(
+ █║   █║ █████╗ █║     █║     █████╗ █║   █║
+ █║   █║ █║╚══╝ █║     █║       █║   ╚█╗ █╔╝
+ ██████║ █████╗ █║     █║       █║    ╚███╔╝
+ █║╚═╝█║ █║╚══╝ █║     █║       █║    █╔╝╚█╗
+ █║   █║ █████╗ █████╗ █████╗ █████╗ █║   █║  █╗
+ ╚╝   ╚╝ ╚════╝ ╚════╝ ╚════╝ ╚════╝ ╚╝   ╚╝  ╚╝
+
+                 E N G I N E
+)";
+
     Application::Application(const std::string& name) {
 
         Log::init();
@@ -37,7 +48,10 @@ namespace hellix::core {
         m_window = std::make_unique<Window>(WindowProps(name, 1280, 720));//cria uma janela com smartPointer unique
         m_window->setEventCallback([this](events::Event& e) { this->onEvent(e); });//conecta a janela ao despacho da Hellix
         initQuadPipeline();
+
+        std::cout << banner << '\n';
     }
+
 
     void Application::onEvent(events::Event& e) {
         events::EventDispatcher dispatcher(e);
@@ -50,6 +64,11 @@ namespace hellix::core {
         dispatcher.dispatch<events::WindowResizeEvent>([this](events::WindowResizeEvent& event) {
             return onWindowResize(event);
         });
+
+        for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it) {
+            if (e.handled) break;
+            (*it)->onEvent(e);
+        }
 
         // Log para depurar se os eventos estão chegando
         //std::cout << "[Event] " << e.toString() << "\n";
@@ -150,11 +169,23 @@ namespace hellix::core {
             glBindVertexArray(m_vao);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+            for (Layer* layer : m_layerStack) {
+                layer->onUpdate(timestep);
+            }
+
             onUpdate(timestep);
             onRender();
 
             m_window->onUpdate();
         }
+    }
+
+    void Application::pushLayer(Layer* layer) {
+        m_layerStack.pushLayer(layer);
+    }
+
+    void Application::pushOverlay(Layer* overlay) {
+        m_layerStack.pushOverlay(overlay);
     }
 
 }

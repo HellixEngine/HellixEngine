@@ -1,11 +1,13 @@
 #include <engine/engine.hpp>
 #include <iostream>
-#include <engine/events/key_event.hpp>
 
-class SandboxApp : public hellix::core::Application {
+#include "./example_layer.hpp"
+
+class SandboxApp : public hlx::core::Application {
 public:
     SandboxApp() : Application("Hellix Sandbox - Teste de Render 2D") {
         HLX_INFO("Sandbox iniciado com sucesso!");
+        pushLayer(new ExampleLayer());
     }
 
     ~SandboxApp() override {
@@ -36,13 +38,31 @@ public:
             HLX_INFO("Botão do meio do mouse pressionado.");
         }
 
+        if (Input::isKeyPressed(Key::H_I)) {
+            HLX_INFO("Tecla I pressionada.");
+        }
+        if (Input::isKeyPressed(Key::H_E)) {
+            HLX_ERROR("Tecla E pressionada.");
+        }
+        if (Input::isKeyPressed(Key::H_Q)) {
+            HLX_WARN("Tecla Q pressionada.");
+        }
+        if (Input::isKeyPressed(Key::H_R)) {
+            HLX_TRACE("Tecla R pressionada.");
+        }
+        if (Input::isKeyPressed(Key::H_C)) {
+            HLX_CRITICAL("Tecla C pressionada.");
+        }
+
 
     }
     void onRender() override {}
 };
 
+
 int main() {
     UTF8_SUPPORT_PT_BR
+
 
     auto app = std::make_unique<SandboxApp>();
     app->run();

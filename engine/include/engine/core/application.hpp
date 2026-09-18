@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "layer.hpp"
+#include "layer_stack.hpp"
 #include "timestep.hpp"
 #include "engine/core/window.hpp"
 #include "engine/events/event.hpp"
@@ -27,6 +29,9 @@ namespace hellix::core {
         [[nodiscard]] Window& getWindow() { return *m_window; }
         [[nodiscard]] static Application& get() { return *s_instance; }
 
+        void pushLayer(Layer* layer);
+        void pushOverlay(Layer* overlay);
+
     private:
         bool onWindowClose(events::WindowCloseEvent& e);
         bool onWindowResize(events::WindowResizeEvent& e);
@@ -42,6 +47,8 @@ namespace hellix::core {
         void cleanupQuadPipeline();
 
         float m_lastFrameTime = 0.0f;
+
+        LayerStack m_layerStack;
 
     };
 
