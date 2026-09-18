@@ -14,14 +14,26 @@ public:
 
 
     void onUpdate(hlx::TimeStep ts) override {
-        HLX_INFO("Atualizando o Sandbox. Delta Time: {0} segundos", ts.GetSeconds());
-        HLX_INFO("Pressione a tecla W para ver a mensagem no console.");
+        //HLX_INFO("Atualizando o Sandbox. Delta Time: {0} segundos", ts.GetSeconds());
 
-        if (hlx::Input::isKeyPressed(hlx::Key::H_W)) {
+        using namespace hlx;
+
+        if (Input::isKeyPressed(Key::H_W)) {
             HLX_INFO("Tecla W pressionada.");
+        }else if (Input::isKeyPressed(Key::H_S)) {
+            HLX_INFO("Tecla S pressionada.");
+        } if (Input::isKeyPressed(Key::H_A)) {
+            HLX_INFO("Tecla A pressionada.");
+        } else if (Input::isKeyPressed(Key::H_D)) {
+            HLX_INFO("Tecla D pressionada.");
         }
-        if (hlx::Input::isMouseButtonPressed(hlx::Mouse::H_BUTTON_LEFT)) {
+        if (Input::isMouseButtonPressed(Mouse::H_BUTTON_LEFT)) {
             HLX_INFO("Botão esquerdo do mouse pressionado.");
+        }else if (Input::isMouseButtonPressed(Mouse::H_BUTTON_RIGHT)) {
+            HLX_INFO("Botão direito do mouse pressionado.");
+        }
+        if (Input::isMouseButtonPressed(Mouse::H_BUTTON_MIDDLE)) {
+            HLX_INFO("Botão do meio do mouse pressionado.");
         }
 
 
@@ -30,6 +42,8 @@ public:
 };
 
 int main() {
+    UTF8_SUPPORT_PT_BR
+
     auto app = std::make_unique<SandboxApp>();
     app->run();
     return 0;
