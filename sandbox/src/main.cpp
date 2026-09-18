@@ -1,5 +1,6 @@
 #include <engine/engine.hpp>
 #include <iostream>
+#include <engine/events/key_event.hpp>
 
 class SandboxApp : public hellix::core::Application {
 public:
@@ -11,7 +12,17 @@ public:
         std::cout << "[Sandbox] Finalizado.\n";
     }
 
-    void onUpdate() override {}
+
+    void onUpdate() override {
+
+        if (hlx::Input::isKeyPressed(hlx::Key::H_W)) {
+            std::cout << "[Sandbox] Tecla W pressionada.\n";
+        }
+        if (hlx::Input::isMouseButtonPressed(hlx::Mouse::H_BUTTON_LEFT)) {
+            std::cout << "[Sandbox] Botão esquerdo do mouse pressionado.\n";
+        }
+
+    }
     void onRender() override {}
 };
 

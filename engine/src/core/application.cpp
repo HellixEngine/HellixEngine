@@ -28,8 +28,35 @@ namespace hellix::core {
 
     Application::Application(const std::string& name) {
         s_instance = this;
-        m_window = std::make_unique<Window>(WindowProps(name, 1280, 720));
+        m_window = std::make_unique<Window>(WindowProps(name, 1280, 720));//cria uma janela com smartPointer unique
+        m_window->setEventCallback([this](events::Event& e) { this->onEvent(e); });//conecta a janela ao despacho da Hellix
         initQuadPipeline();
+    }
+
+    void Application::onEvent(events::Event& e) {
+        events::EventDispatcher dispatcher(e);
+
+        // Trata fechamento e redimensionamento nativos
+        dispatcher.dispatch<events::WindowCloseEvent>([this](events::WindowCloseEvent& event) {
+            return onWindowClose(event);
+        });
+
+        dispatcher.dispatch<events::WindowResizeEvent>([this](events::WindowResizeEvent& event) {
+            return onWindowResize(event);
+        });
+
+        // Log para depurar se os eventos estão chegando
+        //std::cout << "[Event] " << e.toString() << "\n";
+    }
+
+    bool Application::onWindowClose(events::WindowCloseEvent& e) {
+        m_running = false;
+        return true;
+    }
+
+    bool Application::onWindowResize(events::WindowResizeEvent& e) {
+        glViewport(0, 0, e.getWidth(), e.getHeight());
+        return false;
     }
 
     Application::~Application() {

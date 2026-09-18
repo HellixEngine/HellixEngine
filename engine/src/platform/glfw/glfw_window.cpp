@@ -4,9 +4,17 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "engine/events/application_event.hpp"
+#include "engine/events/key_event.hpp"
+#include "engine/events/mouse_event.hpp"
+
 namespace hellix::core {
 
     static bool s_glfwInitialized = false;
+
+    static void glfwErrorCallback(int error, const char* description) {
+        std::cerr << "[HellixCore] GLFW Error (" << error << "): " << description << "\n";
+    }
 
     void Window::WindowDeleter::operator()(GLFWwindow* window) const {
         if (window) {
@@ -20,6 +28,7 @@ namespace hellix::core {
         if (!s_glfwInitialized) {
             int success = glfwInit();
             if (!success) {
+                glfwSetErrorCallback(glfwErrorCallback);
                 std::cerr << "[HellixCore] Falha ao inicializar GLFW!\n";
                 return;
             }
@@ -51,8 +60,93 @@ namespace hellix::core {
             return;
         }
 
-        glViewport(0, 0, static_cast<int>(m_data.width), static_cast<int>(m_data.height));
+        glViewport(0, 0, static_cast<int>(m_data.width), static_cast<int>(m_data.height));// Define a viewport inicial
         glfwSwapInterval(1); // VSync ativo
+
+        // Associa a struct m_data ao ponteiro interno GLFW da janela
+        glfwSetWindowUserPointer(rawWindow, &m_data);
+
+        // ==========================================
+        // Registro dos Callbacks GLFW -> Hellix
+        // ==========================================
+
+        // 1. Redimensionamento da Janela
+        glfwSetWindowSizeCallback(m_window.get(), [](GLFWwindow* window, int width, int height) {
+            auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+            data->width = width;
+            data->height = height;
+
+            glViewport(0, 0, width, height);//redefine a viewport quando a janela for redimensionada
+
+            events::WindowResizeEvent event(width, height);
+            if (data->eventCallback) data->eventCallback(event);
+        });
+
+        // 2. Fechamento da Janela
+        glfwSetWindowCloseCallback(m_window.get(), [](GLFWwindow* window) {
+            auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+
+            events::WindowCloseEvent event;
+            if (data->eventCallback) data->eventCallback(event);
+        });
+
+        // 3. Teclado
+        glfwSetKeyCallback(m_window.get(), [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+            auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+
+            switch (action) {
+                case GLFW_PRESS: {
+                    events::KeyPressedEvent event(key, 0);
+                    if (data->eventCallback) data->eventCallback(event);
+                    break;
+                }
+                case GLFW_RELEASE: {
+                    events::KeyReleasedEvent event(key);
+                    if (data->eventCallback) data->eventCallback(event);
+                    break;
+                }
+                case GLFW_REPEAT: {
+                    events::KeyPressedEvent event(key, 1);
+                    if (data->eventCallback) data->eventCallback(event);
+                    break;
+                }
+            }
+        });
+
+        // 4. Cliques do Mouse
+        glfwSetMouseButtonCallback(m_window.get(), [](GLFWwindow* window, int button, int action, int mods) {
+            auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+
+            switch (action) {
+                case GLFW_PRESS: {
+                    events::MouseButtonPressedEvent event(button);
+                    if (data->eventCallback) data->eventCallback(event);
+                    break;
+                }
+                case GLFW_RELEASE: {
+                    events::MouseButtonReleasedEvent event(button);
+                    if (data->eventCallback) data->eventCallback(event);
+                    break;
+                }
+                default: break;
+            }
+        });
+
+        // 5. Posição do Cursor (Mouse)
+        glfwSetCursorPosCallback(m_window.get(), [](GLFWwindow* window, double xpos, double ypos) {
+            auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+
+            events::MouseMovedEvent event(static_cast<float>(xpos), static_cast<float>(ypos));
+            if (data->eventCallback) data->eventCallback(event);
+        });
+
+        // 6. Scroll do Mouse
+        glfwSetScrollCallback(m_window.get(), [](GLFWwindow* window, double xoffset, double yoffset) {
+            auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+
+            events::MouseScrolledEvent event(static_cast<float>(xoffset), static_cast<float>(yoffset));
+            if (data->eventCallback) data->eventCallback(event);
+        });
     }
 
     Window::~Window() {
