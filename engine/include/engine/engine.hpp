@@ -17,5 +17,6 @@ namespace hlx {
     using Key = core::input::KeyCode;
     using Mouse = core::input::MouseCode;
     using Input = core::input::Input;
+    using TimeStep = core::Timestep;
 }
 

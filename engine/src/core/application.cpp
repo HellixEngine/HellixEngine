@@ -4,6 +4,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "engine/core/timestep.hpp"
+
 namespace hellix::core {
 
     Application* Application::s_instance = nullptr;
@@ -126,6 +128,12 @@ namespace hellix::core {
 
     void Application::run() {
         while (m_running) {
+
+            float time = static_cast<float>(glfwGetTime());
+            Timestep timestep = time - m_lastFrameTime;
+            m_lastFrameTime = time;
+
+
             if (m_window->shouldClose()) {
                 m_running = false;
                 break;
@@ -138,7 +146,7 @@ namespace hellix::core {
             glBindVertexArray(m_vao);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-            onUpdate();
+            onUpdate(timestep);
             onRender();
 
             m_window->onUpdate();

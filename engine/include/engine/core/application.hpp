@@ -1,6 +1,8 @@
 #pragma once
 
 #include <memory>
+
+#include "timestep.hpp"
 #include "engine/core/window.hpp"
 #include "engine/events/event.hpp"
 #include "engine/events/application_event.hpp"
@@ -19,7 +21,7 @@ namespace hellix::core {
 
         virtual void onEvent(events::Event& e);
 
-        virtual void onUpdate() {}
+        virtual void onUpdate(Timestep ts) {}
         virtual void onRender() {}
 
         [[nodiscard]] Window& getWindow() { return *m_window; }
@@ -38,6 +40,9 @@ namespace hellix::core {
 
         void initQuadPipeline();
         void cleanupQuadPipeline();
+
+        float m_lastFrameTime = 0.0f;
+
     };
 
 }

@@ -13,7 +13,7 @@ public:
     }
 
 
-    void onUpdate() override {
+    void onUpdate(hlx::TimeStep ts) override {
 
         if (hlx::Input::isKeyPressed(hlx::Key::H_W)) {
             std::cout << "[Sandbox] Tecla W pressionada.\n";
