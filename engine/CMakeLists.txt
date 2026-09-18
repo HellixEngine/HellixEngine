@@ -42,3 +42,7 @@ endif()
 if(TARGET imgui)
     target_link_libraries(HellixCore PUBLIC imgui)
 endif()
+
+if(TARGET spdlog)
+    target_link_libraries(HellixCore PUBLIC spdlog)
+endif()

@@ -43,3 +43,16 @@ if(IMGUI_SOURCES)
         target_link_libraries(imgui PUBLIC glfw)
     endif()
 endif()
+
+# Declara uma biblioteca de interface (header-only)
+add_library(spdlog INTERFACE)
+
+# Expõe os cabeçalhos para qualquer target que faça link com spdlog
+target_include_directories(spdlog INTERFACE
+        ${CMAKE_CURRENT_SOURCE_DIR}/spdlog/include
+)
+
+# Força o modo header-only para os consumidores
+target_compile_definitions(spdlog INTERFACE
+        SPDLOG_HEADER_ONLY
+)
