@@ -1,10 +1,9 @@
 #pragma once
 
+#include "core/input_manager.hpp"
 #include "engine/core/application.hpp"
 #include "engine/core/window.hpp"
 #include "engine/core/log.hpp"
-#include "engine/events/key_event.hpp"
-#include "engine/core/input.hpp"
 
 
 /**
@@ -12,13 +11,12 @@
  */
 namespace hlx {
     using namespace hellix;
-    //alternatica a using Key = events::KeyCode;
-    //using enum events::KeyCode; // permite o acesso direto aos códigos de tecla sem precisar do prefixo dentro do namespace hlx
 
-    //namespace input = core::input;
-    using Key = core::input::KeyCode;
-    using Mouse = core::input::MouseCode;
-    using Input = core::input::Input;
+    //using enum events::Key; // permite o acesso direto aos códigos de tecla sem precisar do prefixo dentro do namespace hlx
+    using Key = core::input::Key;
+    //using enum core::input::MouseButton; // permite o acesso direto aos códigos de tecla sem precisar do prefixo dentro do namespace hlx
+    using MouseCode = core::input::MouseButton;
+    using Input = core::input::InputManager;
     using TimeStep = core::Timestep;
     using Logger = core::Log;
 }

@@ -4,8 +4,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "engine/core/input_manager.hpp"
 #include "engine/core/log.hpp"
 #include "engine/core/timestep.hpp"
+#include "engine/events/mouse_event.hpp"
 
 namespace hellix::core {
 
@@ -65,13 +67,18 @@ namespace hellix::core {
             return onWindowResize(event);
         });
 
+        // Se tiver um evento MouseScrolledEvent registrado:
+        dispatcher.dispatch<events::MouseScrolledEvent>([](events::MouseScrolledEvent& event) {
+            input::InputManager::getInstance().setMouseWheel(static_cast<int>(event.getYOffset()));
+            return false; // Permite que o evento continue para as camadas
+        });
+
         for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it) {
             if (e.handled) break;
             (*it)->onEvent(e);
         }
 
-        // Log para depurar se os eventos estão chegando
-        //std::cout << "[Event] " << e.toString() << "\n";
+
     }
 
     bool Application::onWindowClose(events::WindowCloseEvent& e) {
@@ -156,6 +163,11 @@ namespace hellix::core {
             Timestep timestep = time - m_lastFrameTime;
             m_lastFrameTime = time;
 
+            m_window->onUpdate();
+
+            // 3. Atualização de estados e polling do InputManager
+            auto* nativeWindow = static_cast<GLFWwindow*>(m_window->getNativeWindow());
+            input::InputManager::getInstance().update(nativeWindow);
 
             if (m_window->shouldClose()) {
                 m_running = false;
@@ -176,7 +188,6 @@ namespace hellix::core {
             onUpdate(timestep);
             onRender();
 
-            m_window->onUpdate();
         }
     }
 
