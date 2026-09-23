@@ -3,6 +3,7 @@
 
 #include "./example_layer.hpp"
 
+
 class SandboxApp : public hlx::core::Application {
 public:
     SandboxApp() : Application("Hellix Sandbox - Teste de Render 2D") {

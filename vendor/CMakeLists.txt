@@ -44,6 +44,7 @@ if(IMGUI_SOURCES)
     endif()
 endif()
 
+
 # Declara uma biblioteca de interface (header-only)
 add_library(spdlog INTERFACE)
 
@@ -52,7 +53,25 @@ target_include_directories(spdlog INTERFACE
         ${CMAKE_CURRENT_SOURCE_DIR}/spdlog/include
 )
 
-# Força o modo header-only para os consumidores
-#target_compile_definitions(spdlog INTERFACE
-#        SPDLOG_HEADER_ONLY
-#)
+# ============================================================
+# NLOHMANN JSON - Header Only
+# ============================================================
+
+add_library(nlohmann_json INTERFACE)
+
+target_include_directories(nlohmann_json INTERFACE
+        "${CMAKE_CURRENT_SOURCE_DIR}/NLOHMANN/include"
+        "${CMAKE_CURRENT_SOURCE_DIR}/NLOHMANN/single_include"
+)
+
+
+# ============================================================
+# STB - Header Only
+# ============================================================
+
+add_library(stb INTERFACE)
+
+target_include_directories(stb INTERFACE
+        "${CMAKE_CURRENT_SOURCE_DIR}/STB"
+)
+

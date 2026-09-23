@@ -1,6 +1,7 @@
 #pragma once
 
 #include <engine/engine.hpp>
+#
 
 class ExampleLayer : public hlx::core::Layer {
 public:
@@ -16,7 +17,7 @@ public:
 
     void onUpdate(hlx::TimeStep ts) override {
         // Log leve ou atualização periódica de teste
-        // HLX_TRACE("Frame time: {0}ms", ts.getMilliseconds());
+        //HLX_TRACE("Frame time: {0}ms", ts.GetMilliseconds());
     }
 
     void onEvent(hlx::events::Event& event) override {
