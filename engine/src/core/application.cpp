@@ -99,6 +99,7 @@ namespace hellix::core {
         cleanupQuadPipeline();
         glfwTerminate();
         s_instance = nullptr;
+        FileSystem::shutdown();
     }
 
     void Application::close() {

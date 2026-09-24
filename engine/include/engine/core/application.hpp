@@ -2,9 +2,9 @@
 
 #include <memory>
 
-#include "layer.hpp"
-#include "layer_stack.hpp"
-#include "timestep.hpp"
+#include "engine/core/layer.hpp"
+#include "engine/core/layer_stack.hpp"
+#include "engine/core/timestep.hpp"
 #include "engine/core/window.hpp"
 #include "engine/events/event.hpp"
 #include "engine/events/application_event.hpp"
