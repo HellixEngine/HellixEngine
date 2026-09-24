@@ -10,9 +10,9 @@ namespace hellix::core::input {
         constexpr uint32_t MOUSE_BUTTON_MIDDLE_BIT = 1 << 2;
 
         // todo_: Substituir pela função de distância euclidiana da biblioteca de matemática da engine
-        float calculateDistance(const Vec2i& a, const Vec2i& b) {
-            float dx = static_cast<float>(a.first - b.first);
-            float dy = static_cast<float>(a.second - b.second);
+        float calculateDistance(const math::Vec2i& a, const math::Vec2i& b) {
+            float dx = static_cast<float>(a.x - b.x);
+            float dy = static_cast<float>(a.y - b.y);
             return std::sqrt(dx * dx + dy * dy);
         }
     }
@@ -162,31 +162,31 @@ namespace hellix::core::input {
         return input; 
     }
 
-    Vec2i InputManager::getInputValue2D(Key left, Key right, Key up, Key down) {
+    math::Vec2i InputManager::getInputValue2D(Key left, Key right, Key up, Key down) {
         // Y positivo para cima (up = +1, down = -1)[cite: 4]
         return { getInputValue(left, right), getInputValue(down, up) };
     }
 
-    Vec2i InputManager::getInputValue2D(Key left, Key right, Key up, Key down,
+    math::Vec2i InputManager::getInputValue2D(Key left, Key right, Key up, Key down,
                                         Key altLeft, Key altRight, Key altUp, Key altDown) {
         return { getInputValue(left, right, altLeft, altRight), getInputValue(down, up, altDown, altUp) };
     }
 
-    Vec2f InputManager::getInputValueF2D(Key left, Key right, Key up, Key down) {
+    math::Vec2 InputManager::getInputValueF2D(Key left, Key right, Key up, Key down) {
         return { getInputValueF(left, right), getInputValueF(down, up) };
     }
 
-    Vec2f InputManager::getInputValueF2D(Key left, Key right, Key up, Key down,
+    math::Vec2 InputManager::getInputValueF2D(Key left, Key right, Key up, Key down,
                                          Key altLeft, Key altRight, Key altUp, Key altDown) {
         return { getInputValueF(left, right, altLeft, altRight), getInputValueF(down, up, altDown, altUp) };
     }
 
-    Vec2i InputManager::getInputAxes() {
+    math::Vec2i InputManager::getInputAxes() {
         return getInputValue2D(Key::H_A, Key::H_D, Key::H_W, Key::H_S,
                                Key::H_LEFT, Key::H_RIGHT, Key::H_UP, Key::H_DOWN); 
     }
 
-    Vec2f InputManager::getInputAxesF() {
+    math::Vec2 InputManager::getInputAxesF() {
         return getInputValueF2D(Key::H_A, Key::H_D, Key::H_W, Key::H_S,
                                 Key::H_LEFT, Key::H_RIGHT, Key::H_UP, Key::H_DOWN); 
     }
@@ -301,8 +301,8 @@ namespace hellix::core::input {
 
         // 5. Cálculo do Delta de movimento do mouse
         m_mouseDelta = {
-            m_mousePosition.first - m_lastMousePos.first,
-            m_mousePosition.second - m_lastMousePos.second
+            m_mousePosition.x - m_lastMousePos.x,
+            m_mousePosition.y - m_lastMousePos.y
         };
         m_lastMousePos = m_mousePosition;
 
@@ -324,8 +324,8 @@ namespace hellix::core::input {
         // 7. Cálculo do Delta de arraste (Drag Delta) se o arraste estiver em andamento
         if (m_isDraggingLeft) {
             m_dragDelta = {
-                m_mousePosition.first - m_dragStartPosLeft.first,
-                m_mousePosition.second - m_dragStartPosLeft.second
+                m_mousePosition.x - m_dragStartPosLeft.x,
+                m_mousePosition.y - m_dragStartPosLeft.y
             };
         } else {
             m_dragDelta = { 0, 0 };

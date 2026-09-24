@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <utility>
 #include <GLFW/glfw3.h>
+#include "engine/math/vec2.hpp"
 
 /**
  * @file input_manager.hpp
@@ -79,18 +80,6 @@
     X(BUTTON_8, GLFW_MOUSE_BUTTON_8)
 
 namespace hellix::core::input {
-
-    /**
-     * @brief Alias temporário para vetores 2D inteiros.
-     * @note todo_: Substituir pelo tipo definitivo da biblioteca de matemática da HellixEngine (ex: Vec2i).
-     */
-    using Vec2i = std::pair<int, int>;
-
-    /**
-     * @brief Alias temporário para vetores 2D de ponto flutuante.
-     * @note todo_: Substituir pelo tipo definitivo da biblioteca de matemática da HellixEngine (ex: Vec2f).
-     */
-    using Vec2f = std::pair<float, float>;
 
     /**
      * @brief Enumeração fortemente tipada para as teclas suportadas pela engine.
@@ -342,7 +331,7 @@ namespace hellix::core::input {
          * @param down Tecla negativa no eixo Y.
          * @return Par ordenado com os eixos calculados.
          */
-        Vec2i getInputValue2D(Key left, Key right, Key up, Key down);
+        math::Vec2i getInputValue2D(Key left, Key right, Key up, Key down);
 
         /**
          * @brief Monta um vetor 2D discreto inteiro com conjunto primário e alternativo de teclas.
@@ -356,7 +345,7 @@ namespace hellix::core::input {
          * @param altDown Tecla alternativa Y-.
          * @return Par ordenado inteiro representativo do eixo 2D.
          */
-        Vec2i getInputValue2D(Key left, Key right, Key up, Key down, Key altLeft, Key altRight, Key altUp, Key altDown);
+        math::Vec2i getInputValue2D(Key left, Key right, Key up, Key down, Key altLeft, Key altRight, Key altUp, Key altDown);
 
         /**
          * @brief Monta um vetor 2D de ponto flutuante a partir de quatro teclas direcionais.
@@ -366,7 +355,7 @@ namespace hellix::core::input {
          * @param down Tecla negativa no eixo Y.
          * @return Par ordenado float representativo do eixo 2D.
          */
-        Vec2f getInputValueF2D(Key left, Key right, Key up, Key down);
+        math::Vec2 getInputValueF2D(Key left, Key right, Key up, Key down);
 
         /**
          * @brief Monta um vetor 2D de ponto flutuante com conjunto primário e alternativo de teclas.
@@ -380,19 +369,19 @@ namespace hellix::core::input {
          * @param altDown Tecla alternativa Y-.
          * @return Par ordenado float representativo do eixo 2D.
          */
-        Vec2f getInputValueF2D(Key left, Key right, Key up, Key down, Key altLeft, Key altRight, Key altUp, Key altDown);
+        math::Vec2 getInputValueF2D(Key left, Key right, Key up, Key down, Key altLeft, Key altRight, Key altUp, Key altDown);
 
         /**
          * @brief Retorna os eixos direcionais discretos padrão da engine (WASD + Setas direcionais).
          * @return Vetor 2D com eixos em coordenadas inteiras.
          */
-        Vec2i getInputAxes();
+        math::Vec2i getInputAxes();
 
         /**
          * @brief Retorna os eixos direcionais contínuos padrão da engine (WASD + Setas direcionais).
          * @return Vetor 2D com eixos normalizáveis em ponto flutuante.
          */
-        Vec2f getInputAxesF();
+        math::Vec2 getInputAxesF();
 
         // =========================================================
         // MOUSE: POSIÇÃO, DELTA E SCROLL
@@ -402,19 +391,19 @@ namespace hellix::core::input {
          * @brief Retorna a posição atual do cursor na janela em pixels.
          * @return Coordenadas X e Y atuais do mouse.
          */
-        [[nodiscard]] Vec2i getMousePosition() const { return m_mousePosition; }
+        [[nodiscard]] math::Vec2i getMousePosition() const { return m_mousePosition; }
 
         /**
          * @brief Retorna a variação (deslocamento) do mouse ocorrida neste frame.
          * @return Vetor delta (posição atual subtraída da posição do último frame).
          */
-        [[nodiscard]] Vec2i getMouseDelta() const { return m_mouseDelta; }
+        [[nodiscard]] math::Vec2i getMouseDelta() const { return m_mouseDelta; }
 
         /**
          * @brief Retorna o deslocamento do arraste do mouse (drag) desde o início do clique.
          * @return Vetor de deslocamento do arraste.
          */
-        [[nodiscard]] Vec2i getMouseDragDelta() const { return m_dragDelta; }
+        [[nodiscard]] math::Vec2i getMouseDragDelta() const { return m_dragDelta; }
 
         /**
          * @brief Informa se o botão esquerdo do mouse está realizando uma operação de arrasto (drag).
@@ -521,11 +510,11 @@ namespace hellix::core::input {
         std::bitset<NUM_KEYS> m_previousState{};  ///< Tabela de bits com o snapshot do frame anterior para detecção de transições.
         std::unordered_map<Key, int> m_keymap;    ///< Tabela de correspondência entre o enum Key e os códigos GLFW.
 
-        Vec2i m_mousePosition{0, 0};              ///< Posição absoluta do cursor no frame corrente.
-        Vec2i m_lastMousePos{0, 0};               ///< Posição do cursor gravada no último frame.
-        Vec2i m_mouseDelta{0, 0};                 ///< Vetor de deslocamento relativo do mouse neste frame.
-        Vec2i m_dragDelta{0, 0};                  ///< Vetor de deslocamento do arraste do mouse (drag) desde o início do clique.
-        Vec2i m_dragStartPosLeft{0, 0};           ///< Coordenadas de início do clique para cálculo de arraste.
+        math::Vec2i m_mousePosition{0, 0};              ///< Posição absoluta do cursor no frame corrente.
+        math::Vec2i m_lastMousePos{0, 0};               ///< Posição do cursor gravada no último frame.
+        math::Vec2i m_mouseDelta{0, 0};                 ///< Vetor de deslocamento relativo do mouse neste frame.
+        math::Vec2i m_dragDelta{0, 0};                  ///< Vetor de deslocamento do arraste do mouse (drag) desde o início do clique.
+        math::Vec2i m_dragStartPosLeft{0, 0};           ///< Coordenadas de início do clique para cálculo de arraste.
         int m_mouseWheelY = 0;                    ///< Valor de rolagem vertical da roda do mouse.
         int m_dragThreshold = 4;                  ///< Limiar mínimo em pixels para ativação do arraste.
         bool m_isDraggingLeft = false;            ///< Flag indicativa se o arraste do botão esquerdo está em andamento.
