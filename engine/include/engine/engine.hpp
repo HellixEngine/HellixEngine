@@ -1,6 +1,8 @@
 #pragma once
-
-#include "core/input_manager.hpp"
+#include "engine/core/buffer.hpp"
+#include "engine/core/file_system.hpp"
+#include "engine/core/timestep.hpp"
+#include "engine/core/input_manager.hpp"
 #include "engine/core/application.hpp"
 #include "engine/core/window.hpp"
 #include "engine/core/log.hpp"
@@ -19,5 +21,8 @@ namespace hlx {
     using Input = core::input::InputManager;
     using TimeStep = core::Timestep;
     using Logger = core::Log;
+
+    using FileSystem = core::FileSystem;
+    using Buffer = core::Buffer;
 }
 

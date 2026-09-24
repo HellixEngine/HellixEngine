@@ -2,77 +2,60 @@
 
 #include <engine/engine.hpp>
 
-class ExampleLayer : public hlx::core::Layer {
+class ExampleLayer : public hellix::core::Layer {
 public:
     ExampleLayer() : Layer("ExampleLayer") {}
 
     void onAttach() override {
-        HLX_WARN("ExampleLayer acoplada! Testando configuracao do InputManager...");
+        HLX_INFO("ExampleLayer acoplada! A iniciar testes do FileSystem (VFS)...");
 
-        // Registo de acoes e atalhos customizados
-        auto& input = hellix::core::input::InputManager::getInstance();
-        input.addBinding("Jump", { hellix::core::input::Key::H_SPACE });
-        input.addBinding("Save", { hellix::core::input::Key::H_LCTRL, hellix::core::input::Key::H_S });
+        // 1. Teste de escrita e leitura de ficheiro de texto via alias assets://
+        const std::string testFilePath = "assets://config/test_settings.json";
+        const std::string jsonContent = "{\n  \"engine\": \"HellixEngine\",\n  \"version\": 1.0\n}";
+
+        if (hlx::FileSystem::writeText(testFilePath, jsonContent)) {
+            HLX_INFO("[FileSystem] Ficheiro de texto escrito com sucesso em: {0}", testFilePath);
+        } else {
+            HLX_ERROR("[FileSystem] Falha ao escrever ficheiro de texto.");
+        }
+
+        std::string loadedText = hlx::FileSystem::readText(testFilePath);
+        HLX_TRACE("[FileSystem] Conteudo lido:\n{0}", loadedText);
+
+        // 2. Teste de metadados (tamanho e existencia)
+        if (hlx::FileSystem::exists(testFilePath)) {
+            uint64_t size = hlx::FileSystem::getFileSize(testFilePath);
+            HLX_INFO("[FileSystem] O ficheiro existe no disco! Tamanho: {0} bytes", size);
+        }
+
+        // 3. Teste de escrita e leitura binaria com Buffer
+        const std::string binFilePath = "assets://data/raw_data.bin";
+        hlx::Buffer writeBuffer(4);
+        writeBuffer.data[0] = std::byte{0xDE};
+        writeBuffer.data[1] = std::byte{0xAD};
+        writeBuffer.data[2] = std::byte{0xBE};
+        writeBuffer.data[3] = std::byte{0xEF};
+
+        if (hlx::FileSystem::writeBytes(binFilePath, writeBuffer)) {
+            HLX_INFO("[FileSystem] Buffer binario gravado com sucesso.");
+        }
+
+        hlx::Buffer readBuffer = hlx::FileSystem::readBytes(binFilePath);
+        if (readBuffer.isValid()) {
+            HLX_INFO("[FileSystem] Buffer binario lido. Tamanho: {0} bytes. Byte 0: 0x{1:X}",
+                     readBuffer.size, static_cast<unsigned int>(readBuffer.data[0]));
+        }
+
+        // 4. Resolucao de caminho fisico absoluto
+        std::filesystem::path physicalPath = hlx::FileSystem::resolve("assets://data/raw_data.bin");
+        HLX_TRACE("[FileSystem] Caminho fisico resolvido: {0}", physicalPath.string());
     }
 
     void onDetach() override {
         HLX_WARN("ExampleLayer desacoplada!");
     }
 
+    void onUpdate(hlx::TimeStep ts) override {}
 
-    void onUpdate(hlx::TimeStep ts) override {
-        using namespace hlx;
-        auto& input = Input::getInstance();
-        // 1. Validacao de acao com tecla simples (Jump)
-        if (input.isActionJustPressed("Jump")) {
-            HLX_INFO("[Input Action] 'Jump' disparado via espaco!");
-        }else if (input.isActionReleased("Jump")) {//não faz sentido segurar desacionado kkkkkkkkk, então tanto faz ser isAction(Just)Released
-            HLX_INFO("[Input Shortcut] 'Jump' desacionado (Space)!");
-        }
-
-        // 2. Validacao de atalho composto com modificador (CTRL + S)
-        if (input.isActionJustPressed("Save")) {
-            HLX_INFO("[Input Shortcut] 'Save' acionado (CTRL + S)!");
-        }
-
-        // 3. Validacao de eixos direcionais (WASD + Setas)
-        auto [axisX, axisY] = input.getInputAxesF();
-        if ((axisX != 0.0f || axisY != 0.0f) & !input.isKeyPressed(Key::H_LCTRL)) {
-            HLX_TRACE("[Input Axis] Eixo direcional: X = {0}, Y = {1}", axisX, axisY);
-        }
-
-        // 4. Validacao de deteccao de arraste de mouse (Drag & Drop)
-        if (input.isDraggingLeft()) {
-            auto [deltaX, deltaY] = input.getMouseDragDelta();
-            HLX_WARN("[Input Mouse] Arrastando botao esquerdo! Delta: ({0}, {1})", deltaX, deltaY);
-
-        }
-
-        // 5. Validacao de scroll da roda do mouse
-        if (input.getMouseWheel() != 0) {
-            HLX_TRACE("[Input Mouse] Roda do mouse rolada: {0}", input.getMouseWheel());
-        }
-
-        /*if (input.isMouseLeftPressed()) {
-            HLX_INFO("[Input Mouse] Botao esquerdo do mouse pressionado!");
-        }*/
-        //ou
-        if (input.isMousePressed(MouseCode::H_BUTTON_LEFT)) {// outra forma de chamar o metodo, mas serve para todos os botoes do mouse, inclusive o scroll click (middle button)
-            HLX_INFO("[Input Mouse] Botao esquerdo do mouse pressionado!");
-        }
-        // 6. Validacao de teclas individuais (R, T, Y)
-        if (input.isKeyPressed(Key::H_R)) {
-            HLX_INFO("[Input Key] Tecla R sendo pressionada!");
-        }
-        if (input.isJustKeyPressed(Key::H_T)) {
-            HLX_INFO("[Input Key] Tecla T acabou de ser pressionada!");
-        }
-        if (input.isKeyReleased(Key::H_Y)) {// ou isJustKeyReleased(Key::H_Y) o resultado é o mesmo
-            HLX_INFO("[Input Key] Tecla Y acabou de ser liberada!");
-        }
-    }
-
-    void onEvent(hlx::events::Event& event) override {
-        // Eventos nativos continuam a fluir pela fila se necessario
-    }
+    void onEvent(hlx::events::Event& event) override {}
 };
