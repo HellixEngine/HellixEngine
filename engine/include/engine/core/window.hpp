@@ -43,9 +43,13 @@ namespace hellix::core {
          *@brief The height of the window in pixels.
          */
         uint32_t height;
+        /**
+         *@brief The path to the icon for the window.
+         */
+        std::string iconPath = "";
 
-        WindowProps(std::string t = "Hellix Engine", uint32_t w = 1280, uint32_t h = 720)
-            : title(std::move(t)), width(w), height(h) {}
+        WindowProps(std::string_view t = "Hellix Engine", uint32_t w = 1280, uint32_t h = 720, std::string_view InIconPath = "")
+            : title(t), width(w), height(h), iconPath(InIconPath) {}
     };
 
     class Window {
@@ -61,6 +65,13 @@ namespace hellix::core {
 
         Window(const Window&) = delete;
         Window& operator=(const Window&) = delete;
+
+
+        /**
+         * @brief Define ou altera o ícone da janela em tempo de execução.
+         * @param virtualPath Caminho VFS (ex: "assets://icon.png"). Se vazio, restaura o padrão.
+         */
+        void setIcon(std::string_view virtualPath);
 
         void onUpdate();
         [[nodiscard]] bool shouldClose() const;
@@ -113,9 +124,14 @@ namespace hellix::core {
              */
             uint32_t height;
             /**
+             *@brief The path to the icon for the window.
+             */
+            std::string iconPath;  // Path to the window icon
+            /**
              *@brief Callback function for handling events.
              */
             EventCallbackFn eventCallback;
+
         };
 
         WindowData m_data;

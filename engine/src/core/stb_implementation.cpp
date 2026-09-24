@@ -11,7 +11,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <STB/stb_image.h>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-//#include <STB/stb_image_write.h>
+#include <STB/stb_image_write.h>
 
 #if defined(_MSC_VER)
     #pragma warning(pop)

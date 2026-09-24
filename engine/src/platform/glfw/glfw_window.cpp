@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "engine/core/image.hpp"
 #include "engine/core/log.hpp"
 #include "engine/events/application_event.hpp"
 #include "engine/events/key_event.hpp"
@@ -24,8 +25,37 @@ namespace hellix::core {
         }
     }
 
+    void Window::setIcon(std::string_view virtualPath) {
+        if (virtualPath.empty()) {
+            // Se o caminho for vazio, restaura o ícone padrão do sistema operativo
+            glfwSetWindowIcon(m_window.get(), 0, nullptr);
+            return;
+        }
+
+        // IMPORTANTE: GLFW espera a imagem sem inversão vertical (flipVertically = false)
+        // e com 4 canais (RGBA)
+        ImageData iconData = ImageLoader::load(virtualPath, false, 4);
+
+        if (!iconData.isValid()) {
+            HELLIX_WARN("GlfwWindow: Não foi possível definir o ícone da janela a partir de: {0}", virtualPath);
+            return;
+        }
+
+        GLFWimage glfwImage;
+        glfwImage.width = iconData.width;
+        glfwImage.height = iconData.height;
+        glfwImage.pixels = iconData.pixels;
+
+        // Aplica o ícone na janela (suporta array, aqui passamos 1 imagem)
+        glfwSetWindowIcon(m_window.get(), 1, &glfwImage);
+        HELLIX_INFO("GlfwWindow: Ícone definido com sucesso: {0} ({1}x{2})",
+                         virtualPath, iconData.width, iconData.height);
+
+        // iconData é desalocada automaticamente aqui via RAII
+    }
+
     Window::Window(const WindowProps& props)
-        : m_data{props.title, props.width, props.height} {
+        : m_data{props.title, props.width, props.height, props.iconPath} {
         
         if (!s_glfwInitialized) {
             int success = glfwInit();
@@ -60,6 +90,11 @@ namespace hellix::core {
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
             HELLIX_ERROR("Falha ao inicializar GLAD!");
             return;
+        }
+
+        // Aplica o ícone se o caminho foi fornecido
+        if (!m_data.iconPath.empty()) {
+            setIcon(m_data.iconPath);
         }
 
         glViewport(0, 0, static_cast<int>(m_data.width), static_cast<int>(m_data.height));// Define a viewport inicial
@@ -167,5 +202,7 @@ namespace hellix::core {
     GLFWwindow* Window::getNativeWindow() const {
         return m_window.get();
     }
+
+
 
 }

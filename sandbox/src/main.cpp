@@ -9,6 +9,14 @@ public:
     SandboxApp() : Application("Hellix Sandbox - Teste de Render 2D") {
         HLX_INFO("Sandbox iniciado com sucesso!");
         pushLayer(new ExampleLayer());
+
+
+        auto iconPath = hlx::FileSystem::resolve("assets://icon/icon.png");
+
+
+
+        getWindow().setIcon(iconPath.string().c_str());
+
     }
 
     ~SandboxApp() override {
