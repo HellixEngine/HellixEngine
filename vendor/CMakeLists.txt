@@ -57,9 +57,9 @@ target_include_directories(spdlog INTERFACE
 # NLOHMANN JSON - Header Only
 # ============================================================
 
-add_library(nlohmann_json INTERFACE)
+add_library(NLOHMANN INTERFACE)
 
-target_include_directories(nlohmann_json INTERFACE
+target_include_directories(NLOHMANN INTERFACE
         "${CMAKE_CURRENT_SOURCE_DIR}/NLOHMANN/include"
         "${CMAKE_CURRENT_SOURCE_DIR}/NLOHMANN/single_include"
 )
@@ -69,9 +69,18 @@ target_include_directories(nlohmann_json INTERFACE
 # STB - Header Only
 # ============================================================
 
-add_library(stb INTERFACE)
+add_library(STB INTERFACE)
 
-target_include_directories(stb INTERFACE
+target_include_directories(STB INTERFACE
         "${CMAKE_CURRENT_SOURCE_DIR}/STB"
 )
 
+# ============================================================
+# MINIAUDIO - Header Only
+# ============================================================
+
+add_library(MINIAUDIO INTERFACE)
+
+target_include_directories(MINIAUDIO INTERFACE
+        "${CMAKE_CURRENT_SOURCE_DIR}/MINIAUDIO"
+)
