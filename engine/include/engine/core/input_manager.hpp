@@ -257,6 +257,15 @@ namespace hellix::core::input {
          */
         void addBinding(const std::string& action, KeyBind bind);
 
+
+        /**
+         * @brief Registra um vínculo nomeado para uma ação customizável.
+         * @param action Identificador textual da ação (ex: "Jump", "Fire").
+         * @param bind Configuração de tecla e modificador associada.
+         * @return Retorna o nome da ação registrada.
+         */
+        std::string addBindingR(const std::string& action, KeyBind bind);
+
         /**
          * @brief Verifica se a ação mapeada está sendo mantida pressionada.
          * @param action Nome da ação.
@@ -377,13 +386,13 @@ namespace hellix::core::input {
          * @brief Retorna os eixos direcionais discretos padrão da engine (WASD + Setas direcionais).
          * @return Vetor 2D com eixos em coordenadas inteiras.
          */
-        Vec2i getInputAxies();
+        Vec2i getInputAxes();
 
         /**
          * @brief Retorna os eixos direcionais contínuos padrão da engine (WASD + Setas direcionais).
          * @return Vetor 2D com eixos normalizáveis em ponto flutuante.
          */
-        Vec2f getInputAxiesF();
+        Vec2f getInputAxesF();
 
         // =========================================================
         // MOUSE: POSIÇÃO, DELTA E SCROLL
@@ -400,6 +409,12 @@ namespace hellix::core::input {
          * @return Vetor delta (posição atual subtraída da posição do último frame).
          */
         [[nodiscard]] Vec2i getMouseDelta() const { return m_mouseDelta; }
+
+        /**
+         * @brief Retorna o deslocamento do arraste do mouse (drag) desde o início do clique.
+         * @return Vetor de deslocamento do arraste.
+         */
+        [[nodiscard]] Vec2i getMouseDragDelta() const { return m_dragDelta; }
 
         /**
          * @brief Informa se o botão esquerdo do mouse está realizando uma operação de arrasto (drag).
@@ -509,6 +524,7 @@ namespace hellix::core::input {
         Vec2i m_mousePosition{0, 0};              ///< Posição absoluta do cursor no frame corrente.
         Vec2i m_lastMousePos{0, 0};               ///< Posição do cursor gravada no último frame.
         Vec2i m_mouseDelta{0, 0};                 ///< Vetor de deslocamento relativo do mouse neste frame.
+        Vec2i m_dragDelta{0, 0};                  ///< Vetor de deslocamento do arraste do mouse (drag) desde o início do clique.
         Vec2i m_dragStartPosLeft{0, 0};           ///< Coordenadas de início do clique para cálculo de arraste.
         int m_mouseWheelY = 0;                    ///< Valor de rolagem vertical da roda do mouse.
         int m_dragThreshold = 4;                  ///< Limiar mínimo em pixels para ativação do arraste.

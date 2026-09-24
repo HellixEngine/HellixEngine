@@ -7,7 +7,7 @@ public:
     ExampleLayer() : Layer("ExampleLayer") {}
 
     void onAttach() override {
-        HLX_INFO("ExampleLayer acoplada! Testando configuracao do InputManager...");
+        HLX_WARN("ExampleLayer acoplada! Testando configuracao do InputManager...");
 
         // Registo de acoes e atalhos customizados
         auto& input = hellix::core::input::InputManager::getInstance();
@@ -19,12 +19,15 @@ public:
         HLX_WARN("ExampleLayer desacoplada!");
     }
 
-    void onUpdate(hlx::TimeStep ts) override {
-        auto& input = hlx::Input::getInstance();
 
+    void onUpdate(hlx::TimeStep ts) override {
+        using namespace hlx;
+        auto& input = Input::getInstance();
         // 1. Validacao de acao com tecla simples (Jump)
         if (input.isActionJustPressed("Jump")) {
             HLX_INFO("[Input Action] 'Jump' disparado via espaco!");
+        }else if (input.isActionReleased("Jump")) {//não faz sentido segurar desacionado kkkkkkkkk, então tanto faz ser isAction(Just)Released
+            HLX_INFO("[Input Shortcut] 'Jump' desacionado (Space)!");
         }
 
         // 2. Validacao de atalho composto com modificador (CTRL + S)
@@ -33,15 +36,16 @@ public:
         }
 
         // 3. Validacao de eixos direcionais (WASD + Setas)
-        auto [axisX, axisY] = input.getInputAxiesF();
-        if (axisX != 0.0f || axisY != 0.0f) {
+        auto [axisX, axisY] = input.getInputAxesF();
+        if ((axisX != 0.0f || axisY != 0.0f) & !input.isKeyPressed(Key::H_LCTRL)) {
             HLX_TRACE("[Input Axis] Eixo direcional: X = {0}, Y = {1}", axisX, axisY);
         }
 
         // 4. Validacao de deteccao de arraste de mouse (Drag & Drop)
         if (input.isDraggingLeft()) {
-            auto [deltaX, deltaY] = input.getMouseDelta();
+            auto [deltaX, deltaY] = input.getMouseDragDelta();
             HLX_WARN("[Input Mouse] Arrastando botao esquerdo! Delta: ({0}, {1})", deltaX, deltaY);
+
         }
 
         // 5. Validacao de scroll da roda do mouse
@@ -51,25 +55,24 @@ public:
 
         /*if (input.isMouseLeftPressed()) {
             HLX_INFO("[Input Mouse] Botao esquerdo do mouse pressionado!");
-        }*/ //ou
-        if (input.isMousePressed(hlx::MouseCode::H_BUTTON_LEFT)) {
+        }*/
+        //ou
+        if (input.isMousePressed(MouseCode::H_BUTTON_LEFT)) {// outra forma de chamar o metodo, mas serve para todos os botoes do mouse, inclusive o scroll click (middle button)
             HLX_INFO("[Input Mouse] Botao esquerdo do mouse pressionado!");
         }
-
-        if (input.isKeyPressed(hlx::Key::H_R)) {
+        // 6. Validacao de teclas individuais (R, T, Y)
+        if (input.isKeyPressed(Key::H_R)) {
             HLX_INFO("[Input Key] Tecla R sendo pressionada!");
         }
-        if (input.isJustKeyPressed(hlx::Key::H_T)) {
+        if (input.isJustKeyPressed(Key::H_T)) {
             HLX_INFO("[Input Key] Tecla T acabou de ser pressionada!");
         }
-
-        if (input.isKeyReleased(hlx::Key::H_Y)) {
+        if (input.isKeyReleased(Key::H_Y)) {// ou isJustKeyReleased(Key::H_Y) o resultado é o mesmo
             HLX_INFO("[Input Key] Tecla Y acabou de ser liberada!");
         }
-
     }
 
-    void onEvent(hellix::events::Event& event) override {
+    void onEvent(hlx::events::Event& event) override {
         // Eventos nativos continuam a fluir pela fila se necessario
     }
 };

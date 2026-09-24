@@ -23,13 +23,13 @@ namespace hellix::core::input {
         HLX_KEY_LIST
         #undef X
 
-        m_currentState.reset(); //[cite: 4]
-        m_previousState.reset(); //[cite: 4]
+        m_currentState.reset(); 
+        m_previousState.reset(); 
     }
 
     InputManager& InputManager::getInstance() {
-        static InputManager instance; //[cite: 4]
-        return instance; //[cite: 4]
+        static InputManager instance; 
+        return instance; 
     }
 
     // =========================================================
@@ -37,35 +37,35 @@ namespace hellix::core::input {
     // =========================================================
 
     bool InputManager::isKeyPressed(Key key) {
-        return m_currentState[toIdx(key)]; //[cite: 4]
+        return m_currentState[toIdx(key)]; 
     }
 
     bool InputManager::isKeyPressed(Key k1, Key k2) {
-        return isKeyPressed(k1) || isKeyPressed(k2); //[cite: 4]
+        return isKeyPressed(k1) || isKeyPressed(k2); 
     }
 
     bool InputManager::isKeyReleased(Key key) {
-        return m_previousState[toIdx(key)] && !m_currentState[toIdx(key)]; //[cite: 4]
+        return m_previousState[toIdx(key)] && !m_currentState[toIdx(key)]; 
     }
 
     bool InputManager::isKeyReleased(Key k1, Key k2) {
-        return isKeyReleased(k1) || isKeyReleased(k2); //[cite: 4]
+        return isKeyReleased(k1) || isKeyReleased(k2); 
     }
 
     bool InputManager::isJustKeyPressed(Key key) {
-        return !m_previousState[toIdx(key)] && m_currentState[toIdx(key)]; //[cite: 4]
+        return !m_previousState[toIdx(key)] && m_currentState[toIdx(key)]; 
     }
 
     bool InputManager::isJustKeyPressed(Key k1, Key k2) {
-        return isJustKeyPressed(k1) || isJustKeyPressed(k2); //[cite: 4]
+        return isJustKeyPressed(k1) || isJustKeyPressed(k2); 
     }
 
     bool InputManager::isJustKeyReleased(Key key) {
-        return !m_currentState[toIdx(key)] && m_previousState[toIdx(key)]; //[cite: 4]
+        return !m_currentState[toIdx(key)] && m_previousState[toIdx(key)]; 
     }
 
     bool InputManager::isJustKeyReleased(Key k1, Key k2) {
-        return isJustKeyReleased(k1) || isJustKeyReleased(k2); //[cite: 4]
+        return isJustKeyReleased(k1) || isJustKeyReleased(k2); 
     }
 
     // =========================================================
@@ -73,11 +73,11 @@ namespace hellix::core::input {
     // =========================================================
 
     bool InputManager::isShortcutJustPressed(Key modifier, Key key) {
-        return isKeyPressed(modifier) && isJustKeyPressed(key); //[cite: 4]
+        return isKeyPressed(modifier) && isJustKeyPressed(key); 
     }
 
     bool InputManager::isShortcutReleased(Key modifier, Key key) {
-        return isKeyPressed(modifier) && isKeyReleased(key); //[cite: 4]
+        return isKeyPressed(modifier) && isKeyReleased(key); 
     }
 
     // =========================================================
@@ -85,44 +85,49 @@ namespace hellix::core::input {
     // =========================================================
 
     void InputManager::addBinding(const std::string& action, KeyBind bind) {
-        m_bindings.insert_or_assign(action, bind); //[cite: 4]
+        m_bindings.insert_or_assign(action, bind); 
+    }
+
+    std::string InputManager::addBindingR(const std::string &action, KeyBind bind) {
+        m_bindings.insert_or_assign(action, bind);
+        return action;
     }
 
     bool InputManager::isActionPressed(const std::string& action) {
-        auto it = m_bindings.find(action); //[cite: 4]
-        if (it == m_bindings.end()) return false; //[cite: 4]
+        auto it = m_bindings.find(action); 
+        if (it == m_bindings.end()) return false; 
 
-        const KeyBind& b = it->second; //[cite: 4]
-        if (b.modifier != Key::_COUNT) { //[cite: 4]
-            return isKeyPressed(b.modifier) && isKeyPressed(b.mainKey); //[cite: 4]
+        const KeyBind& b = it->second; 
+        if (b.modifier != Key::_COUNT) { 
+            return isKeyPressed(b.modifier) && isKeyPressed(b.mainKey); 
         }
-        return isKeyPressed(b.mainKey); //[cite: 4]
+        return isKeyPressed(b.mainKey); 
     }
 
     bool InputManager::isActionJustPressed(const std::string& action) {
-        auto it = m_bindings.find(action); //[cite: 4]
-        if (it == m_bindings.end()) return false; //[cite: 4]
+        auto it = m_bindings.find(action); 
+        if (it == m_bindings.end()) return false; 
 
-        const KeyBind& b = it->second; //[cite: 4]
-        if (b.modifier != Key::_COUNT) { //[cite: 4]
-            return isShortcutJustPressed(b.modifier, b.mainKey); //[cite: 4]
+        const KeyBind& b = it->second; 
+        if (b.modifier != Key::_COUNT) { 
+            return isShortcutJustPressed(b.modifier, b.mainKey); 
         }
-        return isJustKeyPressed(b.mainKey); //[cite: 4]
+        return isJustKeyPressed(b.mainKey); 
     }
 
     bool InputManager::isActionJustReleased(const std::string& action) {
-        auto it = m_bindings.find(action); //[cite: 4]
-        if (it == m_bindings.end()) return false; //[cite: 4]
+        auto it = m_bindings.find(action); 
+        if (it == m_bindings.end()) return false; 
 
-        const KeyBind& b = it->second; //[cite: 4]
-        if (b.modifier != Key::_COUNT) { //[cite: 4]
-            return isShortcutReleased(b.modifier, b.mainKey); //[cite: 4]
+        const KeyBind& b = it->second; 
+        if (b.modifier != Key::_COUNT) { 
+            return isShortcutReleased(b.modifier, b.mainKey); 
         }
-        return isJustKeyReleased(b.mainKey); //[cite: 4]
+        return isJustKeyReleased(b.mainKey); 
     }
 
     bool InputManager::isActionReleased(const std::string& action) {
-        return isActionJustReleased(action); //[cite: 4]
+        return isActionJustReleased(action); 
     }
 
     // =========================================================
@@ -130,31 +135,31 @@ namespace hellix::core::input {
     // =========================================================
 
     float InputManager::getInputValueF(Key k1, Key k2) {
-        float input = 0.0f; //[cite: 4]
-        if (isKeyPressed(k1)) input -= 1.0f; //[cite: 4]
-        if (isKeyPressed(k2)) input += 1.0f; //[cite: 4]
-        return input; //[cite: 4]
+        float input = 0.0f; 
+        if (isKeyPressed(k1)) input -= 1.0f; 
+        if (isKeyPressed(k2)) input += 1.0f; 
+        return input; 
     }
 
     float InputManager::getInputValueF(Key k1, Key k2, Key altK1, Key altK2) {
-        float input = 0.0f; //[cite: 4]
-        if (isKeyPressed(k1) || isKeyPressed(altK1)) input -= 1.0f; //[cite: 4]
-        if (isKeyPressed(k2) || isKeyPressed(altK2)) input += 1.0f; //[cite: 4]
-        return input; //[cite: 4]
+        float input = 0.0f; 
+        if (isKeyPressed(k1) || isKeyPressed(altK1)) input -= 1.0f; 
+        if (isKeyPressed(k2) || isKeyPressed(altK2)) input += 1.0f; 
+        return input; 
     }
 
     int InputManager::getInputValue(Key k1, Key k2) {
-        int input = 0; //[cite: 4]
-        if (isKeyPressed(k1)) input -= 1; //[cite: 4]
-        if (isKeyPressed(k2)) input += 1; //[cite: 4]
-        return input; //[cite: 4]
+        int input = 0; 
+        if (isKeyPressed(k1)) input -= 1; 
+        if (isKeyPressed(k2)) input += 1; 
+        return input; 
     }
 
     int InputManager::getInputValue(Key k1, Key k2, Key altK1, Key altK2) {
-        int input = 0; //[cite: 4]
-        if (isKeyPressed(k1) || isKeyPressed(altK1)) input -= 1; //[cite: 4]
-        if (isKeyPressed(k2) || isKeyPressed(altK2)) input += 1; //[cite: 4]
-        return input; //[cite: 4]
+        int input = 0; 
+        if (isKeyPressed(k1) || isKeyPressed(altK1)) input -= 1; 
+        if (isKeyPressed(k2) || isKeyPressed(altK2)) input += 1; 
+        return input; 
     }
 
     Vec2i InputManager::getInputValue2D(Key left, Key right, Key up, Key down) {
@@ -176,14 +181,14 @@ namespace hellix::core::input {
         return { getInputValueF(left, right, altLeft, altRight), getInputValueF(down, up, altDown, altUp) };
     }
 
-    Vec2i InputManager::getInputAxies() {
+    Vec2i InputManager::getInputAxes() {
         return getInputValue2D(Key::H_A, Key::H_D, Key::H_W, Key::H_S,
-                               Key::H_LEFT, Key::H_RIGHT, Key::H_UP, Key::H_DOWN); //[cite: 4]
+                               Key::H_LEFT, Key::H_RIGHT, Key::H_UP, Key::H_DOWN); 
     }
 
-    Vec2f InputManager::getInputAxiesF() {
+    Vec2f InputManager::getInputAxesF() {
         return getInputValueF2D(Key::H_A, Key::H_D, Key::H_W, Key::H_S,
-                                Key::H_LEFT, Key::H_RIGHT, Key::H_UP, Key::H_DOWN); //[cite: 4]
+                                Key::H_LEFT, Key::H_RIGHT, Key::H_UP, Key::H_DOWN); 
     }
 
     // =========================================================
@@ -247,7 +252,7 @@ namespace hellix::core::input {
             #define X(name, code) case Key::H_##name: return #name;
             HLX_KEY_LIST
             #undef X
-            default: return "UNKNOWN_KEY"; //[cite: 4]
+            default: return "UNKNOWN_KEY";
         }
     }
 
@@ -256,15 +261,15 @@ namespace hellix::core::input {
             #define X(name, code) case MouseButton::H_##name: return #name;
             HLX_MOUSE_BUTTON_LIST
             #undef X
-            default: return "UNKNOWN_MOUSE_BUTTON"; //[cite: 4]
+            default: return "UNKNOWN_MOUSE_BUTTON";
         }
     }
 
     void InputManager::update(GLFWwindow* windowHandle) {
         if (!windowHandle) return;
 
-        // 1. Salva o snapshot anterior do teclado[cite: 4]
-        m_previousState = m_currentState; //[cite: 4]
+        // 1. Salva o snapshot anterior do teclado
+        m_previousState = m_currentState;
 
         // 2. Consulta de teclado via GLFW Polling
         for (const auto& [hlxKey, glfwKeyCode] : m_keymap) {
@@ -274,8 +279,8 @@ namespace hellix::core::input {
             m_currentState[toIdx(hlxKey)] = (state == GLFW_PRESS || state == GLFW_REPEAT);
         }
 
-        // 3. Salva snapshot anterior do mouse e consulta estado atual via GLFW[cite: 4]
-        m_lastMouseState = m_currentMouseState; //[cite: 4]
+        // 3. Salva snapshot anterior do mouse e consulta estado atual via GLFW
+        m_lastMouseState = m_currentMouseState;
         m_currentMouseState = 0;
 
         if (glfwGetMouseButton(windowHandle, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
@@ -287,35 +292,45 @@ namespace hellix::core::input {
         if (glfwGetMouseButton(windowHandle, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS) {
             m_currentMouseState |= MOUSE_BUTTON_MIDDLE_BIT;
         }
-
-        // 4. Consulta de posição do cursor via GLFW (substituindo SDL_GetMouseState)[cite: 4]
         double cursorX = 0.0;
         double cursorY = 0.0;
+        // 4. Consulta de posição do cursor via GLFW (substituindo SDL_GetMouseState)
         glfwGetCursorPos(windowHandle, &cursorX, &cursorY);
 
         m_mousePosition = { static_cast<int>(cursorX), static_cast<int>(cursorY) };
 
-        // 5. Cálculo do Delta de movimento do mouse[cite: 4]
+        // 5. Cálculo do Delta de movimento do mouse
         m_mouseDelta = {
             m_mousePosition.first - m_lastMousePos.first,
             m_mousePosition.second - m_lastMousePos.second
         };
-        m_lastMousePos = m_mousePosition; //[cite: 4]
+        m_lastMousePos = m_mousePosition;
 
-        // 6. Lógica de detecção de arrasto (Drag) com botão esquerdo[cite: 4]
-        if (isMouseLeftPressed()) { //[cite: 4]
-            m_dragStartPosLeft = m_mousePosition; //[cite: 4]
+        // 6. Lógica de detecção de arrasto (Drag) com botão esquerdo
+        if (isMouseLeftPressed()) {
+            m_dragStartPosLeft = m_mousePosition;
         }
 
-        if (isMouseLeftDown()) { //[cite: 4]
-            if (!m_isDraggingLeft) { //[cite: 4]
-                if (calculateDistance(m_mousePosition, m_dragStartPosLeft) > static_cast<float>(m_dragThreshold)) { //[cite: 4]
-                    m_isDraggingLeft = true; //[cite: 4]
+        if (isMouseLeftDown()) {
+            if (!m_isDraggingLeft) {
+                if (calculateDistance(m_mousePosition, m_dragStartPosLeft) > static_cast<float>(m_dragThreshold)) {
+                    m_isDraggingLeft = true;
                 }
             }
         } else {
-            m_isDraggingLeft = false; //[cite: 4]
+            m_isDraggingLeft = false;
         }
+
+        // 7. Cálculo do Delta de arraste (Drag Delta) se o arraste estiver em andamento
+        if (m_isDraggingLeft) {
+            m_dragDelta = {
+                m_mousePosition.first - m_dragStartPosLeft.first,
+                m_mousePosition.second - m_dragStartPosLeft.second
+            };
+        } else {
+            m_dragDelta = { 0, 0 };
+        }
+
     }
 
 }
