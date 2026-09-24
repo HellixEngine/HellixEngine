@@ -1,8 +1,11 @@
 #pragma once
 
-#include <engine/engine.hpp>
+#include "engine/client/core.hpp"
+#include "engine/client/math.hpp"
+#include "engine/client/input.hpp"
+#include "engine/client/events.hpp"
 
-class ExampleLayer : public hellix::core::Layer {
+class ExampleLayer : public hlx::Layer {
 public:
     ExampleLayer() : Layer("ExampleLayer") {}
 
@@ -55,7 +58,25 @@ public:
         HLX_WARN("ExampleLayer desacoplada!");
     }
 
-    void onUpdate(hlx::TimeStep ts) override {}
+    void onUpdate(hlx::TimeStep ts) override {
+        using namespace hlx;
+        using namespace hlx::input;
+
+        auto& input = Input::getInstance();
+        if (input.isJustKeyPressed(H_SPACE)) {
+            HLX_INFO("[Input] Tecla ESPAÇO pressionada!");
+        }
+        if (input.isJustKeyPressed(H_ESCAPE)) {
+            HLX_INFO("[Input] Tecla ESC pressionada!");
+            Application::get().close();
+        }
+
+        if (input.isDraggingLeft()) {
+            auto dragDelta = input.getMouseDragDelta();
+            HLX_INFO("[Input] Arraste do mouse em andamento. Delta: ({0}, {1})", dragDelta.x, dragDelta.y);
+        }
+
+    }
 
     void onEvent(hlx::events::Event& event) override {}
 };

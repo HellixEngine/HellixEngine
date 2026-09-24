@@ -1,4 +1,4 @@
-#include <engine/engine.hpp>
+#include <../../engine/include/engine/client/engine.hpp>
 #include <iostream>
 
 class EditorApp : public hellix::core::Application {

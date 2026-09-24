@@ -1,10 +1,10 @@
-#include <engine/engine.hpp>
+#include <engine/client/core.hpp>
 #include <iostream>
 
 #include "./example_layer.hpp"
 
 
-class SandboxApp : public hlx::core::Application {
+class SandboxApp : public hlx::Application {
 public:
     SandboxApp() : Application("Hellix Sandbox - Teste de Render 2D") {
         HLX_INFO("Sandbox iniciado com sucesso!");
