@@ -8,6 +8,7 @@
 #include "engine/core/log.hpp"
 #include "engine/core/layer_stack.hpp"
 #include "engine/core/image.hpp"
+#include "engine/core/platform.hpp"
 #include "engine/core/timer.hpp"
 
 namespace hlx {
@@ -32,4 +33,8 @@ namespace hlx {
     using ImageLoader = core::ImageLoader;
 
     using Timer = core::Timer;
+
+    using Platform = core::Platform;
+    using Locale   = core::Locale;
+    using MessageBoxType = core::MessageBoxType;
 }

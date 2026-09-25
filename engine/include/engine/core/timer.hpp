@@ -85,7 +85,7 @@ namespace hellix::core {
          * @brief Sobrecarga para uso direto com o Timestep da HellixEngine.
          */
         bool update(Timestep ts) noexcept {
-            return update(ts.getSeconds());
+            return update(ts.GetSeconds());
         }
 
         // =========================================================

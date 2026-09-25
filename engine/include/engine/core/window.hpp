@@ -4,39 +4,6 @@
 #include <memory>
 #include <string>
 
-
-#if defined(_WIN32) || defined(_WIN64)
-
-    #ifndef UTF8_SUPPORT
-        #define UTF8_SUPPORT system("chcp 65001");
-    #endif
-
-    #ifndef UTF8_SUPPORT_PT_BR
-        #define UTF8_SUPPORT_PT_BR setlocale(LC_ALL, "pt_BR.UTF-8"); system("chcp 65001");
-    #endif
-
-    #ifndef UTF8_SUPPORT_EN_US
-        #define UTF8_SUPPORT_EN_US setlocale(LC_ALL, "en_US.UTF-8"); system("chcp 65001");
-    #endif
-
-#elif defined(__linux__)
-
-    #ifndef UTF8_SUPPORT
-        #define UTF8_SUPPORT
-    #endif
-
-    #ifndef UTF8_SUPPORT_PT_BR
-        #define UTF8_SUPPORT_PT_BR
-    #endif
-
-    #ifndef UTF8_SUPPORT_EN_US
-        #define UTF8_SUPPORT_EN_US
-    #endif
-
-#endif
-
-
-
 struct GLFWwindow;
 
 namespace hellix::events{

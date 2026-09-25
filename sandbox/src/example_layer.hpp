@@ -52,6 +52,17 @@ public:
         // 4. Resolucao de caminho fisico absoluto
         std::filesystem::path physicalPath = hlx::FileSystem::resolve("assets://data/raw_data.bin");
         HLX_TRACE("[FileSystem] Caminho fisico resolvido: {0}", physicalPath.string());
+
+
+        //teste de integridade de ficheiros essenciais e exibição de mensagem de erro caso não existam
+       /* if (!hlx::FileSystem::exists("assets://shaders/basic.glsl")) {
+            hlx::Platform::showMessageBox(
+                "Erro de Inicialização",
+                "Shader base não encontrado. Verifique a integridade dos ficheiros!",
+                hlx::MessageBoxType::Error
+            );
+        }*/
+
     }
 
     void onDetach() override {
