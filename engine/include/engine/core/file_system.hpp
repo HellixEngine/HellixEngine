@@ -13,6 +13,9 @@ namespace hellix::core {
      */
     class FileSystem {
     public:
+
+        /*@todo concertar dependecia do Current Working Directory(cwd) adicionar formas de pegar o caminho do arquivo atual fisico e nao somente do local de execuçâo*/
+
         // =========================================================
         // INICIALIZAÇÃO E CICLO DE VIDA
         // =========================================================
