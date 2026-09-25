@@ -11,7 +11,7 @@ namespace hellix::math {
 
     /**
      * @brief Estrutura de matriz 4x4 em formato Column-Major (compatível com OpenGL/GLSL).
-     * @details Os elementos internos são acedidos via data[coluna][linha] ou data[coluna * 4 + linha].
+     * @details Os elementos internos são acessados via data[coluna][linha] ou data[coluna * 4 + linha].
      */
     struct Mat4 {
         // Disposição Column-Major: 4 colunas contendo 4 elementos cada (16 floats contíguos)
@@ -22,9 +22,8 @@ namespace hellix::math {
             0.0f, 0.0f, 0.0f, 1.0f  // Coluna 3
         };
 
-        // =========================================================
-        // CONSTRUTORES
-        // =========================================================
+        /** @name Construtores */
+        ///@{
 
         /** @brief Inicializa como matriz identidade por omissão. */
         constexpr Mat4() = default;
@@ -39,10 +38,10 @@ namespace hellix::math {
             elements[8]  = 0.0f;     elements[9]  = 0.0f;     elements[10] = diagonal; elements[11] = 0.0f;
             elements[12] = 0.0f;     elements[13] = 0.0f;     elements[14] = 0.0f;     elements[15] = diagonal;
         }
+        ///@}
 
-        // =========================================================
-        // ACESSO A DADOS (OPENGL INTEROP)
-        // =========================================================
+        /** @name Acesso a dados (interoperabilidade com OpenGL) */
+        ///@{
 
         /**
          * @brief Retorna o ponteiro direto para a memória contígua da matriz.
@@ -58,10 +57,10 @@ namespace hellix::math {
         /** @brief Acesso por coordenadas de coluna e linha: mat(col, row). */
         float& operator()(size_t col, size_t row) noexcept { return elements[col * 4 + row]; }
         const float& operator()(size_t col, size_t row) const noexcept { return elements[col * 4 + row]; }
+        ///@}
 
-        // =========================================================
-        // MULTIPLICAÇÃO DE MATRIZES E VETORES
-        // =========================================================
+        /** @name Multiplicação de matrizes e vetores */
+        ///@{
 
         Mat4 operator*(const Mat4& other) const noexcept {
             Mat4 result(0.0f);
@@ -90,10 +89,10 @@ namespace hellix::math {
                 elements[3] * v.x + elements[7] * v.y + elements[11] * v.z + elements[15] * v.w
             };
         }
+        ///@}
 
-        // =========================================================
-        // OPERAÇÕES DE TRANSFORMAÇÃO ESPACIAL
-        // =========================================================
+        /** @name Operações de transformação espacial */
+        ///@{
 
         /** @brief Retorna uma matriz identidade. */
         static constexpr Mat4 identity() noexcept {
@@ -164,10 +163,10 @@ namespace hellix::math {
 
             return mat * rot;
         }
+        ///@}
 
-        // =========================================================
-        // PROJEÇÕES (OPENGL CLIP SPACE: [-1, 1])
-        // =========================================================
+        /** @name Projeções (espaço de recorte OpenGL: [-1, 1]) */
+        ///@{
 
         /**
          * @brief Gera uma matriz de projeção ortográfica (padrão 2D ou UI).
@@ -185,7 +184,7 @@ namespace hellix::math {
         }
 
         /**
-         * @brief Gera uma matriz de projeção em perspetiva (padrão 3D).
+         * @brief Gera uma matriz de projeção em perspectiva (padrão 3D).
          * @param fovYRad Campo de visão vertical em radianos.
          * @param aspect Proporção de tela (largura / altura).
          * @param zNear Plano de corte próximo (near plane).
@@ -202,7 +201,7 @@ namespace hellix::math {
             result.elements[14] = -(2.0f * zFar * zNear) / (zFar - zNear);
             return result;
         }
+        ///@}
     };
 
 }
-

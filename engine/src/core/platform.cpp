@@ -213,7 +213,7 @@ void Platform::showMessageBox(std::string_view title, std::string_view message, 
                       " || kdialog " + iconType + " \"" + std::string(message) + "\" --title \"" + std::string(title) + "\" 2>/dev/null";
     int ret = std::system(cmd.c_str());
     if (ret != 0) {
-        HELLIX_CORE_WARN("[MessageBox Fallback] {0}: {1}", title, message);
+        HELLIX_WARN("[MessageBox Fallback] {0}: {1}", title, message);
     }
 #endif
 }

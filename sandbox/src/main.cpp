@@ -32,7 +32,7 @@ public:
 
 int main() {
     hlx::Platform::enableUTF8();
-    hlx::Platform::setLocale(hlx::Locale::PtBR);
+    //hlx::Platform::setLocale(hlx::Locale::PtBR);
 
 
     auto app = std::make_unique<SandboxApp>();

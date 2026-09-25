@@ -10,10 +10,10 @@ namespace hellix::core {
      */
     class Timer {
     private:
-        float m_targetTime = 0.0f;   // Duração pretendida em segundos
-        float m_currentTime = 0.0f;  // Tempo acumulado decorrido
-        bool  m_active = false;      // Estado de execução do timer
-        bool  m_loop = false;        // Se reinicia ciclicamente ao atingir o alvo
+        float m_targetTime = 0.0f;   // Duração alvo em segundos.
+        float m_currentTime = 0.0f;  // Tempo acumulado.
+        bool  m_active = false;      // Estado de execução.
+        bool  m_loop = false;        // Reinicia ao atingir o alvo.
 
     public:
         Timer() = default;
@@ -57,8 +57,9 @@ namespace hellix::core {
         // =========================================================
 
         /**
-         * @brief Atualiza o temporizador com um delta time em segundos.
-         * @return true se o timer disparou/completou neste frame.
+         * @brief Atualiza o temporizador com o tempo transcorrido em segundos.
+         * @param deltaTime Tempo transcorrido desde a última atualização.
+         * @return `true` se o temporizador disparou ou foi concluído neste frame.
          */
         bool update(float deltaTime) noexcept {
             if (!m_active || m_targetTime <= 0.0f) {
@@ -69,20 +70,20 @@ namespace hellix::core {
 
             if (m_currentTime >= m_targetTime) {
                 if (m_loop) {
-                    // Mantém o excesso (overshoot) para evitar desvio temporal cumulativo
+                    // Mantém o excesso para evitar desvio temporal acumulado.
                     m_currentTime -= m_targetTime;
                 } else {
                     m_currentTime = m_targetTime;
                     m_active = false;
                 }
-                return true;
+                return true; // Temporizador disparou ou foi concluído.
             }
 
-            return false;
+            return false; // Temporizador ainda está em progresso.
         }
 
         /**
-         * @brief Sobrecarga para uso direto com o Timestep da HellixEngine.
+         * @brief Atualiza o temporizador usando diretamente um @ref Timestep.
          */
         bool update(Timestep ts) noexcept {
             return update(ts.GetSeconds());
@@ -92,24 +93,32 @@ namespace hellix::core {
         // CONFIGURAÇÕES E GETTERS
         // =========================================================
 
+        /** @brief Define a duração alvo do temporizador em segundos. */
         void setTarget(float seconds) noexcept {
             m_targetTime = std::max(0.0f, seconds);
         }
 
+        /** @brief Define se o temporizador deve reiniciar automaticamente. */
         void setLoop(bool loop) noexcept {
             m_loop = loop;
         }
 
+        /** @brief Informa se o temporizador está ativo. */
         [[nodiscard]] bool isActive() const noexcept { return m_active; }
+        /** @brief Informa se o temporizador está configurado para repetir. */
         [[nodiscard]] bool isLoop() const noexcept { return m_loop; }
+        /** @brief Informa se o temporizador terminou sem estar ativo. */
         [[nodiscard]] bool isFinished() const noexcept { return !m_active && m_currentTime >= m_targetTime && m_targetTime > 0.0f; }
 
+        /** @brief Retorna a duração alvo em segundos. */
         [[nodiscard]] float getTargetTime() const noexcept { return m_targetTime; }
+        /** @brief Retorna o tempo acumulado em segundos. */
         [[nodiscard]] float getCurrentTime() const noexcept { return m_currentTime; }
+        /** @brief Retorna o tempo restante em segundos. */
         [[nodiscard]] float getTimeLeft() const noexcept { return std::max(0.0f, m_targetTime - m_currentTime); }
 
         /**
-         * @brief Retorna a percentagem de conclusão normalizada no intervalo [0.0f, 1.0f].
+         * @brief Retorna o percentual de conclusão normalizado no intervalo [0.0f, 1.0f].
          */
         [[nodiscard]] float getProgress() const noexcept {
             if (m_targetTime <= 0.0f) return 1.0f;

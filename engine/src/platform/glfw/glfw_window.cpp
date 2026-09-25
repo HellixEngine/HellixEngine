@@ -27,13 +27,12 @@ namespace hellix::core {
 
     void Window::setIcon(std::string_view virtualPath) {
         if (virtualPath.empty()) {
-            // Se o caminho for vazio, restaura o ícone padrão do sistema operativo
+            // Se o caminho for vazio, restaura o ícone padrão do sistema operacional.
             glfwSetWindowIcon(m_window.get(), 0, nullptr);
             return;
         }
 
-        // IMPORTANTE: GLFW espera a imagem sem inversão vertical (flipVertically = false)
-        // e com 4 canais (RGBA)
+        // GLFW espera a imagem sem inversão vertical e com 4 canais (RGBA).
         ImageData iconData = ImageLoader::load(virtualPath, false, 4);
 
         if (!iconData.isValid()) {
@@ -46,12 +45,12 @@ namespace hellix::core {
         glfwImage.height = iconData.height;
         glfwImage.pixels = iconData.pixels;
 
-        // Aplica o ícone na janela (suporta array, aqui passamos 1 imagem)
+        // Aplica o ícone na janela (a API aceita um array; aqui passamos uma imagem).
         glfwSetWindowIcon(m_window.get(), 1, &glfwImage);
         HELLIX_INFO("GlfwWindow: Ícone definido com sucesso: {0} ({1}x{2})",
                          virtualPath, iconData.width, iconData.height);
 
-        // iconData é desalocada automaticamente aqui via RAII
+        // iconData é desalocada automaticamente aqui por RAII.
     }
 
     Window::Window(const WindowProps& props)
@@ -92,7 +91,7 @@ namespace hellix::core {
             return;
         }
 
-        // Aplica o ícone se o caminho foi fornecido
+        // Aplica o ícone se o caminho foi fornecido.
         if (!m_data.iconPath.empty()) {
             setIcon(m_data.iconPath);
         }
@@ -100,14 +99,12 @@ namespace hellix::core {
         glViewport(0, 0, static_cast<int>(m_data.width), static_cast<int>(m_data.height));// Define a viewport inicial
         glfwSwapInterval(1); // VSync ativo
 
-        // Associa a struct m_data ao ponteiro interno GLFW da janela
+        // Associa a estrutura m_data ao ponteiro interno GLFW da janela.
         glfwSetWindowUserPointer(rawWindow, &m_data);
 
-        // ==========================================
-        // Registro dos Callbacks GLFW -> Hellix
-        // ==========================================
+        // Registro dos callbacks GLFW -> Hellix.
 
-        // 1. Redimensionamento da Janela
+        // 1. Redimensionamento da janela.
         glfwSetWindowSizeCallback(m_window.get(), [](GLFWwindow* window, int width, int height) {
             auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
             data->width = width;
@@ -119,7 +116,7 @@ namespace hellix::core {
             if (data->eventCallback) data->eventCallback(event);
         });
 
-        // 2. Fechamento da Janela
+        // 2. Fechamento da janela.
         glfwSetWindowCloseCallback(m_window.get(), [](GLFWwindow* window) {
             auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
@@ -127,7 +124,7 @@ namespace hellix::core {
             if (data->eventCallback) data->eventCallback(event);
         });
 
-        // 3. Teclado
+        // 3. Teclado.
         glfwSetKeyCallback(m_window.get(), [](GLFWwindow* window, int key, int scancode, int action, int mods) {
             auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
@@ -150,7 +147,7 @@ namespace hellix::core {
             }
         });
 
-        // 4. Cliques do Mouse
+        // 4. Cliques do mouse.
         glfwSetMouseButtonCallback(m_window.get(), [](GLFWwindow* window, int button, int action, int mods) {
             auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
@@ -169,7 +166,7 @@ namespace hellix::core {
             }
         });
 
-        // 5. Posição do Cursor (Mouse)
+        // 5. Posição do cursor.
         glfwSetCursorPosCallback(m_window.get(), [](GLFWwindow* window, double xpos, double ypos) {
             auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
@@ -177,7 +174,7 @@ namespace hellix::core {
             if (data->eventCallback) data->eventCallback(event);
         });
 
-        // 6. Scroll do Mouse
+        // 6. Rolagem do mouse.
         glfwSetScrollCallback(m_window.get(), [](GLFWwindow* window, double xoffset, double yoffset) {
             auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 

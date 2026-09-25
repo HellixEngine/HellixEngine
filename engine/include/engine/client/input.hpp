@@ -8,7 +8,7 @@ namespace hlx::input {
     
     using enum Key;
     
-    //using enum MouseButton;//conflito com enum Key por causa do _COUNT
+    /// @brief Os enumeradores de mouse são expostos individualmente para evitar conflito com `Key::_COUNT`.
     using MouseButton::H_BUTTON_1;
     using MouseButton::H_BUTTON_2;
     using MouseButton::H_BUTTON_3;

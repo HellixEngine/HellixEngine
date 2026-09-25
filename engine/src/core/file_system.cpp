@@ -57,7 +57,7 @@ namespace hellix::core {
             if (pathStr.starts_with(alias)) {
                 std::string relativeSubPath = pathStr.substr(alias.length());
 
-                // Remove barras iniciais redundantes se houver (ex: assets:///ficheiro.txt)
+                // Remove barras iniciais redundantes, se houver (ex.: assets:///arquivo.txt).
                 while (!relativeSubPath.empty() && (relativeSubPath.front() == '/' || relativeSubPath.front() == '\\')) {
                     relativeSubPath.erase(0, 1);
                 }

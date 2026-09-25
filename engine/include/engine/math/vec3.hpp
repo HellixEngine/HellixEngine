@@ -25,9 +25,8 @@ namespace hellix::math {
          */
         constexpr Vector3(const Vector2<T>& xy, T inZ) : x(xy.x), y(xy.y), z(inZ) {}
 
-        // =========================================================
-        // OPERADORES ARITMÉTICOS (VETOR vs VETOR)
-        // =========================================================
+        /** @name Operadores aritméticos entre vetores */
+        ///@{
         constexpr Vector3 operator+(const Vector3& other) const { return {x + other.x, y + other.y, z + other.z}; }
         constexpr Vector3 operator-(const Vector3& other) const { return {x - other.x, y - other.y, z - other.z}; }
         constexpr Vector3 operator*(const Vector3& other) const { return {x * other.x, y * other.y, z * other.z}; }
@@ -37,10 +36,10 @@ namespace hellix::math {
         constexpr Vector3& operator-=(const Vector3& other) { x -= other.x; y -= other.y; z -= other.z; return *this; }
         constexpr Vector3& operator*=(const Vector3& other) { x *= other.x; y *= other.y; z *= other.z; return *this; }
         constexpr Vector3& operator/=(const Vector3& other) { x /= other.x; y /= other.y; z /= other.z; return *this; }
+        ///@}
 
-        // =========================================================
-        // OPERADORES ARITMÉTICOS (VETOR vs ESCALAR)
-        // =========================================================
+        /** @name Operadores aritméticos entre vetor e escalar */
+        ///@{
         constexpr Vector3 operator+(T scalar) const { return {x + scalar, y + scalar, z + scalar}; }
         constexpr Vector3 operator-(T scalar) const { return {x - scalar, y - scalar, z - scalar}; }
         constexpr Vector3 operator*(T scalar) const { return {x * scalar, y * scalar, z * scalar}; }
@@ -52,16 +51,16 @@ namespace hellix::math {
         constexpr Vector3& operator/=(T scalar) { x /= scalar; y /= scalar; z /= scalar; return *this; }
 
         constexpr Vector3 operator-() const { return {-x, -y, -z}; }
+        ///@}
 
-        // =========================================================
-        // COMPARAÇÃO
-        // =========================================================
+        /** @name Comparação */
+        ///@{
         constexpr bool operator==(const Vector3& other) const { return x == other.x && y == other.y && z == other.z; }
         constexpr bool operator!=(const Vector3& other) const { return !(*this == other); }
+        ///@}
 
-        // =========================================================
-        // OPERAÇÕES GEOMÉTRICAS
-        // =========================================================
+        /** @name Operações geométricas */
+        ///@{
         [[nodiscard]] constexpr T lengthSquared() const {
             return (x * x) + (y * y) + (z * z);
         }
@@ -84,14 +83,14 @@ namespace hellix::math {
         }
 
         /**
-         * @brief Calcula o produto escalar (dot product) entre dois vetores.
+         * @brief Calcula o produto escalar entre dois vetores.
          */
         static constexpr T dot(const Vector3& a, const Vector3& b) {
             return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
         }
 
         /**
-         * @brief Calcula o produto vetorial (cross product) entre dois vetores 3D.
+         * @brief Calcula o produto vetorial entre dois vetores 3D.
          */
         static constexpr Vector3 cross(const Vector3& a, const Vector3& b) {
             return {
@@ -121,6 +120,7 @@ namespace hellix::math {
         [[nodiscard]] constexpr Vector2<T> xy() const {
             return {x, y};
         }
+        ///@}
     };
 
     // Aliases explícitos

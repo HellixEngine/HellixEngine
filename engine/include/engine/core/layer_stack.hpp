@@ -5,14 +5,22 @@
 
 namespace hellix::core {
 
+    /**
+     * @brief Mantém a ordem de atualização das camadas e sobreposições.
+     */
     class LayerStack {
     public:
+        /** @brief Cria uma pilha de camadas vazia. */
         LayerStack();
         ~LayerStack();
 
+        /** @brief Adiciona uma camada antes das sobreposições. */
         void pushLayer(Layer* layer);
+        /** @brief Adiciona uma sobreposição ao final da pilha. */
         void pushOverlay(Layer* overlay);
+        /** @brief Remove uma camada da pilha. */
         void popLayer(Layer* layer);
+        /** @brief Remove uma sobreposição da pilha. */
         void popOverlay(Layer* overlay);
 
         auto begin() { return m_layers.begin(); }

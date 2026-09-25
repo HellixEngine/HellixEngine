@@ -129,8 +129,8 @@ namespace hellix::core::input {
 
     /**
      * @brief Gerenciador central de entradas de teclado e mouse da HellixEngine.
-     * @details Implementa o padrão Singleton e gerencia estados de transição (just pressed/released),
-     * arraste de mouse (drag), eixos direcionais e despacho de atalhos.
+     * @details Implementa o padrão Singleton e gerencia estados de transição
+     * (pressionado/liberado recentemente), arraste de mouse, eixos direcionais e atalhos.
      */
     class InputManager {
     public:
@@ -140,9 +140,8 @@ namespace hellix::core::input {
          */
         static InputManager& getInstance();
 
-        // =========================================================
-        // TECLADO: CONSULTAS CONTÍNUAS E TRANSIÇÕES
-        // =========================================================
+        /** @name Teclado: consultas contínuas e transições */
+        ///@{
 
         /**
          * @brief Verifica se uma tecla está sendo segurada no frame atual.
@@ -215,9 +214,9 @@ namespace hellix::core::input {
             return (isKeyPressed(keys) && ...);
         }
 
-        // =========================================================
-        // ATALHOS COM MODIFICADORES
-        // =========================================================
+        ///@}
+        /** @name Atalhos com modificadores */
+        ///@{
 
         /**
          * @brief Verifica se um atalho foi acionado (Modificador segurado + Tecla recém-pressionada).
@@ -235,9 +234,9 @@ namespace hellix::core::input {
          */
         bool isShortcutReleased(Key modifier, Key key);
 
-        // =========================================================
-        // MAPEAMENTO DE AÇÕES
-        // =========================================================
+        ///@}
+        /** @name Mapeamento de ações */
+        ///@{
 
         /**
          * @brief Registra um vínculo nomeado para uma ação customizável.
@@ -283,9 +282,9 @@ namespace hellix::core::input {
          */
         bool isActionReleased(const std::string& action);
 
-        // =========================================================
-        // EIXOS 1D E 2D (ENTRADAS DIRECIONAIS)
-        // =========================================================
+        ///@}
+        /** @name Eixos 1D e 2D (entradas direcionais) */
+        ///@{
 
         /**
          * @brief Calcula um eixo unidimensional contínuo entre [-1.0f, 1.0f].
@@ -383,9 +382,9 @@ namespace hellix::core::input {
          */
         math::Vec2 getInputAxesF();
 
-        // =========================================================
-        // MOUSE: POSIÇÃO, DELTA E SCROLL
-        // =========================================================
+        ///@}
+        /** @name Mouse: posição, deslocamento e rolagem */
+        ///@{
 
         /**
          * @brief Retorna a posição atual do cursor na janela em pixels.
@@ -400,13 +399,13 @@ namespace hellix::core::input {
         [[nodiscard]] math::Vec2i getMouseDelta() const { return m_mouseDelta; }
 
         /**
-         * @brief Retorna o deslocamento do arraste do mouse (drag) desde o início do clique.
+         * @brief Retorna o deslocamento do arraste do mouse desde o início do clique.
          * @return Vetor de deslocamento do arraste.
          */
         [[nodiscard]] math::Vec2i getMouseDragDelta() const { return m_dragDelta; }
 
         /**
-         * @brief Informa se o botão esquerdo do mouse está realizando uma operação de arrasto (drag).
+         * @brief Informa se o botão esquerdo do mouse está realizando uma operação de arrasto.
          * @return True se a distância desde o clique inicial ultrapassou o limiar de arrasto.
          */
         [[nodiscard]] bool isDraggingLeft() const { return m_isDraggingLeft; }
@@ -434,9 +433,9 @@ namespace hellix::core::input {
          */
         void resetMouseWheel() { m_mouseWheelY = 0; }
 
-        // =========================================================
-        // MOUSE: TRANSIÇÕES DE BOTÕES (JUST PRESSED / RELEASED)
-        // =========================================================
+        ///@}
+        /** @name Mouse: transições de botões */
+        ///@{
 
         /** @brief Informa se o botão do mouse foi recém-pressionado neste frame. */
         [[nodiscard]] bool isMousePressed(MouseButton button) const;
@@ -456,15 +455,15 @@ namespace hellix::core::input {
         /** @brief Informa se o botão direito do mouse foi recém-liberado neste frame. */
         [[nodiscard]] bool isMouseRightReleased() const;
 
-        /** @brief Informa se o botão do meio (scroll click) foi recém-pressionado neste frame. */
+        /** @brief Informa se o botão do meio foi recém-pressionado neste frame. */
         [[nodiscard]] bool isMouseMiddlePressed() const;
 
-        /** @brief Informa se o botão do meio (scroll click) foi recém-liberado neste frame. */
+        /** @brief Informa se o botão do meio foi recém-liberado neste frame. */
         [[nodiscard]] bool isMouseMiddleReleased() const;
 
-        // =========================================================
-        // MOUSE: ESTADO CONTÍNUO (DOWN / HELD)
-        // =========================================================
+        ///@}
+        /** @name Mouse: estado contínuo */
+        ///@{
 
         /** @brief Informa se o botão do mouse está sendo mantido pressionado. */
         [[nodiscard]] bool isMouseButtonDown(MouseButton button) const;
@@ -478,9 +477,9 @@ namespace hellix::core::input {
         /** @brief Informa se o botão do meio do mouse está sendo mantido pressionado. */
         [[nodiscard]] bool isMouseMiddleDown() const;
 
-        // =========================================================
-        // REFLEXÃO DE NOMES E CICLO DE ATUALIZAÇÃO
-        // =========================================================
+        ///@}
+        /** @name Reflexão de nomes e ciclo de atualização */
+        ///@{
 
         /**
          * @brief Obtém a representação textual legível de uma tecla sem o prefixo H_.
@@ -530,6 +529,7 @@ namespace hellix::core::input {
          * @return Valor numérico posicional da tecla.
          */
         int toIdx(Key key) const { return static_cast<int>(key); }
+        ///@}
 
         InputManager();
         InputManager(const InputManager&) = delete;

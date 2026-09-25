@@ -36,9 +36,8 @@ namespace hellix::math {
          */
         constexpr Vector4(const Vector2<T>& xy, T inZ, T inW) : x(xy.x), y(xy.y), z(inZ), w(inW) {}
 
-        // =========================================================
-        // OPERADORES ARITMÉTICOS (VETOR vs VETOR)
-        // =========================================================
+        /** @name Operadores aritméticos entre vetores */
+        ///@{
         constexpr Vector4 operator+(const Vector4& other) const { return {x + other.x, y + other.y, z + other.z, w + other.w}; }
         constexpr Vector4 operator-(const Vector4& other) const { return {x - other.x, y - other.y, z - other.z, w - other.w}; }
         constexpr Vector4 operator*(const Vector4& other) const { return {x * other.x, y * other.y, z * other.z, w * other.w}; }
@@ -48,10 +47,10 @@ namespace hellix::math {
         constexpr Vector4& operator-=(const Vector4& other) { x -= other.x; y -= other.y; z -= other.z; w -= other.w; return *this; }
         constexpr Vector4& operator*=(const Vector4& other) { x *= other.x; y *= other.y; z *= other.z; w *= other.w; return *this; }
         constexpr Vector4& operator/=(const Vector4& other) { x /= other.x; y /= other.y; z /= other.z; w /= other.w; return *this; }
+        ///@}
 
-        // =========================================================
-        // OPERADORES ARITMÉTICOS (VETOR vs ESCALAR)
-        // =========================================================
+        /** @name Operadores aritméticos entre vetor e escalar */
+        ///@{
         constexpr Vector4 operator+(T scalar) const { return {x + scalar, y + scalar, z + scalar, w + scalar}; }
         constexpr Vector4 operator-(T scalar) const { return {x - scalar, y - scalar, z - scalar, w - scalar}; }
         constexpr Vector4 operator*(T scalar) const { return {x * scalar, y * scalar, z * scalar, w * scalar}; }
@@ -63,16 +62,16 @@ namespace hellix::math {
         constexpr Vector4& operator/=(T scalar) { x /= scalar; y /= scalar; z /= scalar; w /= scalar; return *this; }
 
         constexpr Vector4 operator-() const { return {-x, -y, -z, -w}; }
+        ///@}
 
-        // =========================================================
-        // COMPARAÇÃO
-        // =========================================================
+        /** @name Comparação */
+        ///@{
         constexpr bool operator==(const Vector4& other) const { return x == other.x && y == other.y && z == other.z && w == other.w; }
         constexpr bool operator!=(const Vector4& other) const { return !(*this == other); }
+        ///@}
 
-        // =========================================================
-        // OPERAÇÕES GEOMÉTRICAS
-        // =========================================================
+        /** @name Operações geométricas */
+        ///@{
         [[nodiscard]] constexpr T lengthSquared() const {
             return (x * x) + (y * y) + (z * z) + (w * w);
         }
@@ -96,7 +95,7 @@ namespace hellix::math {
         }
 
         /**
-         * @brief Calcula o produto escalar (dot product) quadridimensional.
+         * @brief Calcula o produto escalar quadridimensional.
          */
         static constexpr T dot(const Vector4& a, const Vector4& b) {
             return (a.x * b.x) + (a.y * b.y) + (a.z * b.z) + (a.w * b.w);
@@ -116,17 +115,19 @@ namespace hellix::math {
             return (a - b).lengthSquared();
         }
 
-        // =========================================================
-        // SUBOBJETOS (SWIZZLE BÁSICO)
-        // =========================================================
+        /** @name Subobjetos (swizzle básico) */
+        ///@{
         [[nodiscard]] constexpr Vector2<T> xy() const { return {x, y}; }
         [[nodiscard]] constexpr Vector3<T> xyz() const { return {x, y, z}; }
         [[nodiscard]] constexpr Vector3<T> rgb() const { return {x, y, z}; }
+        ///@}
     };
 
-    // Aliases explícitos
+    /** @brief Alias de vetor 4D com componentes de ponto flutuante. */
     using Vec4  = Vector4<float>;
+    /** @brief Alias de vetor 4D com componentes inteiros. */
     using Vec4i = Vector4<int>;
+    /** @brief Alias de vetor 4D com componentes inteiros sem sinal. */
     using Vec4u = Vector4<unsigned int>;
 
 }

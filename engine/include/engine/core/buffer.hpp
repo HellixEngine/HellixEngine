@@ -12,7 +12,9 @@ namespace hellix::core {
      * @details Implementa semântica de movimento (RAII) para evitar cópias desnecessárias.
      */
     struct Buffer {
+        /** @brief Ponteiro para a memória alocada. */
         std::byte* data = nullptr;
+        /** @brief Quantidade de bytes alocados. */
         uint64_t size = 0;
 
         Buffer() = default;
@@ -25,7 +27,7 @@ namespace hellix::core {
             release();
         }
 
-        // Semântica de movimento
+        // Semântica de movimento.
         Buffer(Buffer&& other) noexcept
             : data(other.data), size(other.size) {
             other.data = nullptr;
@@ -47,6 +49,10 @@ namespace hellix::core {
         Buffer(const Buffer&) = delete;
         Buffer& operator=(const Buffer&) = delete;
 
+        /**
+         * @brief Aloca uma quantidade de bytes, liberando o conteúdo anterior.
+         * @param inSize Quantidade de bytes a alocar.
+         */
         void allocate(uint64_t inSize) {
             release();
             if (inSize > 0) {
@@ -55,17 +61,20 @@ namespace hellix::core {
             }
         }
 
+        /** @brief Libera a memória e zera o estado do buffer. */
         void release() {
             delete[] data;
             data = nullptr;
             size = 0;
         }
 
+        /** @brief Informa se o buffer possui memória e tamanho válidos. */
         [[nodiscard]] bool isValid() const {
             return data != nullptr && size > 0;
         }
 
         template<typename T>
+        /** @brief Interpreta o conteúdo como um ponteiro para o tipo informado. */
         [[nodiscard]] T* as() {
             return reinterpret_cast<T*>(data);
         }

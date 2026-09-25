@@ -10,9 +10,13 @@ namespace hellix::core {
      * @brief Estrutura RAII para carregamento e manuseio de dados de pixel via STB.
      */
     struct ImageData {
+        /** @brief Dados de pixel carregados. */
         uint8_t* pixels = nullptr;
+        /** @brief Largura da imagem em pixels. */
         int width = 0;
+        /** @brief Altura da imagem em pixels. */
         int height = 0;
+        /** @brief Quantidade de canais por pixel. */
         int channels = 0;
 
         ImageData() = default;
@@ -21,7 +25,7 @@ namespace hellix::core {
             release();
         }
 
-        // Semântica de movimento (Move semantics)
+        // Semântica de movimento.
         ImageData(ImageData&& other) noexcept
             : pixels(other.pixels), width(other.width), height(other.height), channels(other.channels) {
             other.pixels = nullptr;
@@ -50,12 +54,15 @@ namespace hellix::core {
         ImageData(const ImageData&) = delete;
         ImageData& operator=(const ImageData&) = delete;
 
+        /** @brief Libera os pixels carregados e zera os metadados. */
         void release();
 
+        /** @brief Informa se os pixels e as dimensões da imagem são válidos. */
         [[nodiscard]] bool isValid() const noexcept {
             return pixels != nullptr && width > 0 && height > 0;
         }
 
+        /** @brief Retorna o tamanho estimado dos pixels em bytes. */
         [[nodiscard]] uint64_t getSizeInBytes() const noexcept {
             return static_cast<uint64_t>(width) * height * channels;
         }

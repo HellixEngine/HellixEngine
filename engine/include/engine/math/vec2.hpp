@@ -20,9 +20,8 @@ namespace hellix::math {
         constexpr Vector2(T inX, T inY) : x(inX), y(inY) {}
         constexpr explicit Vector2(T scalar) : x(scalar), y(scalar) {}
 
-        // =========================================================
-        // OPERADORES ARITMÉTICOS (VETOR vs VETOR)
-        // =========================================================
+        /** @name Operadores aritméticos entre vetores */
+        ///@{
         constexpr Vector2 operator+(const Vector2& other) const { return {x + other.x, y + other.y}; }
         constexpr Vector2 operator-(const Vector2& other) const { return {x - other.x, y - other.y}; }
         constexpr Vector2 operator*(const Vector2& other) const { return {x * other.x, y * other.y}; }
@@ -32,10 +31,10 @@ namespace hellix::math {
         constexpr Vector2& operator-=(const Vector2& other) { x -= other.x; y -= other.y; return *this; }
         constexpr Vector2& operator*=(const Vector2& other) { x *= other.x; y *= other.y; return *this; }
         constexpr Vector2& operator/=(const Vector2& other) { x /= other.x; y /= other.y; return *this; }
+        ///@}
 
-        // =========================================================
-        // OPERADORES ARITMÉTICOS (VETOR vs ESCALAR)
-        // =========================================================
+        /** @name Operadores aritméticos entre vetor e escalar */
+        ///@{
         constexpr Vector2 operator+(T scalar) const { return {x + scalar, y + scalar}; }
         constexpr Vector2 operator-(T scalar) const { return {x - scalar, y - scalar}; }
         constexpr Vector2 operator*(T scalar) const { return {x * scalar, y * scalar}; }
@@ -47,16 +46,17 @@ namespace hellix::math {
         constexpr Vector2& operator/=(T scalar) { x /= scalar; y /= scalar; return *this; }
 
         constexpr Vector2 operator-() const { return {-x, -y}; }
+        ///@}
 
-        // =========================================================
-        // COMPARAÇÃO
-        // =========================================================
+        /** @name Comparação */
+        ///@{
         constexpr bool operator==(const Vector2& other) const { return x == other.x && y == other.y; }
         constexpr bool operator!=(const Vector2& other) const { return !(*this == other); }
+        ///@}
 
-        // =========================================================
-        // OPERAÇÕES GEOMÉTRICAS
-        // =========================================================
+        /** @name Operações geométricas */
+        ///@{
+        /** @brief Retorna o quadrado do comprimento do vetor. */
         [[nodiscard]] constexpr T lengthSquared() const {
             return (x * x) + (y * y);
         }
@@ -85,11 +85,14 @@ namespace hellix::math {
         static constexpr T distanceSquared(const Vector2& a, const Vector2& b) {
             return (a - b).lengthSquared();
         }
+        ///@}
     };
 
-    // Aliases explícitos
+    /** @brief Alias de vetor 2D com componentes de ponto flutuante. */
     using Vec2  = Vector2<float>;
+    /** @brief Alias de vetor 2D com componentes inteiros. */
     using Vec2i = Vector2<int>;
+    /** @brief Alias de vetor 2D com componentes inteiros sem sinal. */
     using Vec2u = Vector2<unsigned int>;
 
 }

@@ -4,8 +4,9 @@
 #include "engine/client/input.hpp"
 #include "engine/client/events.hpp"
 
-/** @file
- * @brief The main header file for the Hellix Engine.
+/**
+ * @file engine.hpp
+ * @brief Cabeçalho principal da Hellix Engine.
  */
 
 namespace hlx {

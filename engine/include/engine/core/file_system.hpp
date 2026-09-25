@@ -14,17 +14,18 @@ namespace hellix::core {
     class FileSystem {
     public:
 
-        /*@todo concertar dependecia do Current Working Directory(cwd) adicionar formas de pegar o caminho do arquivo atual fisico e nao somente do local de execuçâo*/
+        /** @todo Corrigir a dependência do diretório de trabalho atual (CWD), permitindo obter o caminho físico do arquivo atual. */
 
-        // =========================================================
-        // INICIALIZAÇÃO E CICLO DE VIDA
-        // =========================================================
+        /** @name Inicialização e ciclo de vida */
+        ///@{
+        /** @brief Inicializa o sistema de arquivos virtual. */
         static void init();
+        /** @brief Libera os recursos do sistema de arquivos virtual. */
         static void shutdown();
+        ///@}
 
-        // =========================================================
-        // GERENCIAMENTO DE PONTOS DE MONTAGEM (VFS)
-        // =========================================================
+        /** @name Gerenciamento de pontos de montagem (VFS) */
+        ///@{
         /**
          * @brief Registra um alias de montagem virtual.
          * @param alias Prefixo com protocolo (ex: "engine://", "assets://").
@@ -43,10 +44,10 @@ namespace hellix::core {
          * @return Caminho absoluto resolvido no disco.
          */
         static std::filesystem::path resolve(std::string_view virtualPath);
+        ///@}
 
-        // =========================================================
-        // LEITURA E ESCRITA
-        // =========================================================
+        /** @name Leitura e escrita */
+        ///@{
         /**
          * @brief Lê todo o conteúdo de um arquivo em formato de texto (string).
          */
@@ -67,14 +68,19 @@ namespace hellix::core {
          * @brief Escreve um buffer de bytes brutos em um arquivo no disco.
          */
         static bool writeBytes(std::string_view virtualPath, const Buffer& buffer);
+        ///@}
 
-        // =========================================================
-        // METADADOS E CONSULTAS
-        // =========================================================
+        /** @name Metadados e consultas */
+        ///@{
+        /** @brief Verifica se o caminho virtual existe. */
         static bool exists(std::string_view virtualPath);
+        /** @brief Verifica se o caminho virtual aponta para um diretório. */
         static bool isDirectory(std::string_view virtualPath);
+        /** @brief Retorna o tamanho do arquivo em bytes. */
         static uint64_t getFileSize(std::string_view virtualPath);
+        /** @brief Retorna a data da última modificação do arquivo. */
         static std::filesystem::file_time_type getLastModifiedTime(std::string_view virtualPath);
+        ///@}
 
     private:
         static inline std::unordered_map<std::string, std::filesystem::path> s_mountPoints;
