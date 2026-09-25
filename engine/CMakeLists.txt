@@ -17,12 +17,18 @@ target_include_directories(HellixCore PUBLIC
 )
 
 # Headers internos e dependências puras (header-only) privadas da engine
-target_include_directories(HellixCore PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-        ${CMAKE_SOURCE_DIR}/vendor/STB
-        ${CMAKE_SOURCE_DIR}/vendor/MINIAUDIO
-        ${CMAKE_SOURCE_DIR}/vendor/NLOHMANN/include
-        ${CMAKE_SOURCE_DIR}/vendor/NLOHMANN/single_include
+#target_include_directories(HellixCore PRIVATE
+#        ${CMAKE_CURRENT_SOURCE_DIR}/src
+#        ${CMAKE_SOURCE_DIR}/vendor/STB
+#        ${CMAKE_SOURCE_DIR}/vendor/MINIAUDIO
+#        ${CMAKE_SOURCE_DIR}/vendor/NLOHMANN/include
+#        ${CMAKE_SOURCE_DIR}/vendor/NLOHMANN/single_include
+#)
+
+target_link_libraries(HellixCore PRIVATE
+        STB
+        MINIAUDIO
+        NLOHMANN
 )
 
 find_package(OpenGL REQUIRED)
@@ -41,4 +47,8 @@ endif()
 
 if(TARGET imgui)
     target_link_libraries(HellixCore PUBLIC imgui)
+endif()
+
+if(TARGET spdlog)
+    target_link_libraries(HellixCore PUBLIC spdlog)
 endif()

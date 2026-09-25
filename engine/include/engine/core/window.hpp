@@ -13,67 +13,68 @@ namespace hellix::events{
 namespace hellix::core {
 
     /**
-     *@brief Structure to hold properties for creating a window.
+     * @brief Propriedades usadas na criação de uma janela.
      */
     struct WindowProps {
-        /**
-         *@brief The title of the window.
-         */
+        /** @brief Título da janela. */
         std::string title;
-        /**
-         *@brief The width of the window in pixels.
-         */
+        /** @brief Largura da janela em pixels. */
         uint32_t width;
-        /**
-         *@brief The height of the window in pixels.
-         */
+        /** @brief Altura da janela em pixels. */
         uint32_t height;
+        /** @brief Caminho do ícone da janela. */
+        std::string iconPath = "";
 
-        WindowProps(std::string t = "Hellix Engine", uint32_t w = 1280, uint32_t h = 720)
-            : title(std::move(t)), width(w), height(h) {}
+        WindowProps(std::string_view t = "Hellix Engine", uint32_t w = 1280, uint32_t h = 720, std::string_view InIconPath = "")
+            : title(t), width(w), height(h), iconPath(InIconPath) {}
     };
 
     class Window {
     public:
         /**
-         *@brief Event callback function type. It takes a reference to an Event object and returns void.
+         * @brief Tipo da função de callback dos eventos da janela.
+         * @details Recebe uma referência para um objeto de evento e não retorna valor.
          */
         using EventCallbackFn = std::function<void(events::Event&)>;
 
 
+        /**
+         * @brief Cria uma janela com as propriedades informadas.
+         * @param props Propriedades de criação da janela.
+         */
         explicit Window(const WindowProps& props);
         ~Window();
 
         Window(const Window&) = delete;
         Window& operator=(const Window&) = delete;
 
+
+        /**
+         * @brief Define ou altera o ícone da janela em tempo de execução.
+         * @param virtualPath Caminho VFS (ex: "assets://icon.png"). Se vazio, restaura o padrão.
+         */
+        void setIcon(std::string_view virtualPath);
+
+        /** @brief Processa eventos do sistema e apresenta o frame atual. */
         void onUpdate();
+        /** @brief Informa se a janela recebeu uma solicitação de fechamento. */
         [[nodiscard]] bool shouldClose() const;
         /**
-         *@brief Sets the event callback function for the window.
-         *@param callback The callback function to be set. It should match the EventCallbackFn type.
+         * @brief Define a função de callback dos eventos da janela.
+         * @param callback Função compatível com o tipo @ref EventCallbackFn.
          */
         void setEventCallback(const EventCallbackFn& callback){
             m_data.eventCallback = callback;
         }
-        /**
-         *@brief Retrieves the width of the window.
-         *@return The width of the window in pixels.
-         */
+        /** @brief Retorna a largura da janela em pixels. */
         [[nodiscard]] uint32_t getWidth() const { return m_data.width; }
-        /**
-         *@brief Retrieves the height of the window.
-         *@return The height of the window in pixels.
-         */
+        /** @brief Retorna a altura da janela em pixels. */
         [[nodiscard]] uint32_t getHeight() const { return m_data.height; }
-        /**
-         *@brief Retrieves the title of the window.
-         *@return The title of the window as a string.
-         */
+        /** @brief Retorna o título da janela. */
         [[nodiscard]] const std::string& getTitle() const { return m_data.title; }
         /**
-         *@brief Retrieves the native GLFW window pointer.
-         *@return A pointer to the native GLFWwindow associated with this window.
+         * @brief Retorna o ponteiro nativo da janela GLFW.
+         * @return Ponteiro para a instância GLFW associada à janela.
          */
         [[nodiscard]] GLFWwindow* getNativeWindow() const;
 
@@ -81,26 +82,19 @@ namespace hellix::core {
         struct WindowDeleter {
             void operator()(GLFWwindow* window) const;
         };
-        /**
-         *@brief Data structure for storing window properties.
-         */
+        /** @brief Estrutura interna que armazena as propriedades da janela. */
         struct WindowData {
-            /**
-             *@brief The title of the window.
-             */
+            /** @brief Título da janela. */
             std::string title;
-            /**
-             *@brief The width of the window in pixels.
-             */
+            /** @brief Largura da janela em pixels. */
             uint32_t width;
-            /**
-             *@brief The height of the window in pixels.
-             */
+            /** @brief Altura da janela em pixels. */
             uint32_t height;
-            /**
-             *@brief Callback function for handling events.
-             */
+            /** @brief Caminho do ícone da janela. */
+            std::string iconPath;
+            /** @brief Função de callback usada para tratar eventos. */
             EventCallbackFn eventCallback;
+
         };
 
         WindowData m_data;

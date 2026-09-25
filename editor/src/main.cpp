@@ -1,4 +1,4 @@
-#include <engine/engine.hpp>
+#include <../../engine/include/engine/client/engine.hpp>
 #include <iostream>
 
 class EditorApp : public hellix::core::Application {
@@ -11,7 +11,7 @@ public:
         std::cout << "[Editor] Finalizado.\n";
     }
 
-    void onUpdate() override {}
+    void onUpdate(hlx::TimeStep ts) override {}
     void onRender() override {}
 };
 

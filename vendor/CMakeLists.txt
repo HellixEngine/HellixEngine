@@ -1,3 +1,5 @@
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+
 # Desativa documentação, testes e exemplos desnecessários do GLFW
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -43,3 +45,44 @@ if(IMGUI_SOURCES)
         target_link_libraries(imgui PUBLIC glfw)
     endif()
 endif()
+
+
+# Declara uma biblioteca de interface (header-only)
+add_library(spdlog INTERFACE)
+
+# Expõe os cabeçalhos para qualquer target que faça link com spdlog
+target_include_directories(spdlog INTERFACE
+        ${CMAKE_CURRENT_SOURCE_DIR}/SPDLOG/include
+)
+
+# ============================================================
+# NLOHMANN JSON - Header Only
+# ============================================================
+
+add_library(NLOHMANN INTERFACE)
+
+target_include_directories(NLOHMANN INTERFACE
+        "${CMAKE_CURRENT_SOURCE_DIR}/NLOHMANN/include"
+        "${CMAKE_CURRENT_SOURCE_DIR}/NLOHMANN/single_include"
+)
+
+
+# ============================================================
+# STB - Header Only
+# ============================================================
+
+add_library(STB INTERFACE)
+
+target_include_directories(STB INTERFACE
+        "${CMAKE_CURRENT_SOURCE_DIR}/STB"
+)
+
+# ============================================================
+# MINIAUDIO - Header Only
+# ============================================================
+
+add_library(MINIAUDIO INTERFACE)
+
+target_include_directories(MINIAUDIO INTERFACE
+        "${CMAKE_CURRENT_SOURCE_DIR}/MINIAUDIO"
+)

@@ -1,7 +1,4 @@
-Para criar o arquivo diretamente na sua máquina sem depender do download, abra o terminal na pasta raiz do projeto (`D:\Projetos\C++\HellixEngine`) e crie o `GIT_GUIDE.md` copiando o conteúdo abaixo:
-
-```markdown
-# Guia Prático de Git para a Equipe (GIT_GUIDE.md)
+# Guia Prático de Git para a Equipe
 
 Este guia reúne os comandos essenciais do Git para o fluxo de trabalho diário na **HellixEngine**, cobrindo desde a configuração inicial da máquina até a resolução de conflitos e abertura de Pull Requests[cite: 15].
 

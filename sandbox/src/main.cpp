@@ -1,32 +1,40 @@
-#include <engine/engine.hpp>
+#include <engine/client/core.hpp>
 #include <iostream>
-#include <engine/events/key_event.hpp>
 
-class SandboxApp : public hellix::core::Application {
+#include "./example_layer.hpp"
+
+
+class SandboxApp : public hlx::Application {
 public:
     SandboxApp() : Application("Hellix Sandbox - Teste de Render 2D") {
-        std::cout << "[Sandbox] Inicializado com sucesso!\n";
+        hlx::FileSystem::unmount("engine://");
+        hlx::FileSystem::mount("engine://", "../engine");
+        HLX_INFO("Sandbox iniciado com sucesso!");
+        pushLayer(new ExampleLayer());
+
+
+
+        //auto iconPath = hlx::FileSystem::resolve("assets://icon/icon.png");
+       // getWindow().setIcon(iconPath.string().c_str());
+        getWindow().setIcon("assets://icon/icon.png");
+
     }
 
     ~SandboxApp() override {
-        std::cout << "[Sandbox] Finalizado.\n";
+        HLX_INFO("Sandbox finalizado com sucesso!");
     }
 
 
-    void onUpdate() override {
-
-        if (hlx::Input::isKeyPressed(hlx::Key::H_W)) {
-            std::cout << "[Sandbox] Tecla W pressionada.\n";
-        }
-        if (hlx::Input::isMouseButtonPressed(hlx::Mouse::H_BUTTON_LEFT)) {
-            std::cout << "[Sandbox] Botão esquerdo do mouse pressionado.\n";
-        }
-
-    }
+    void onUpdate(hlx::TimeStep ts) override {}
     void onRender() override {}
 };
 
+
 int main() {
+    hlx::Platform::enableUTF8();
+    //hlx::Platform::setLocale(hlx::Locale::PtBR);
+
+
     auto app = std::make_unique<SandboxApp>();
     app->run();
     return 0;

@@ -4,6 +4,12 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "engine/core/file_system.hpp"
+#include "engine/core/input_manager.hpp"
+#include "engine/core/log.hpp"
+#include "engine/core/timestep.hpp"
+#include "engine/events/mouse_event.hpp"
+
 namespace hellix::core {
 
     Application* Application::s_instance = nullptr;
@@ -26,12 +32,32 @@ namespace hellix::core {
         }
     )";
 
+    const char* const banner = R"(
+ █║   █║ █████╗ █║     █║     █████╗ █║   █║
+ █║   █║ █║╚══╝ █║     █║       █║   ╚█╗ █╔╝
+ ██████║ █████╗ █║     █║       █║    ╚███╔╝
+ █║╚═╝█║ █║╚══╝ █║     █║       █║    █╔╝╚█╗
+ █║   █║ █████╗ █████╗ █████╗ █████╗ █║   █║  █╗
+ ╚╝   ╚╝ ╚════╝ ╚════╝ ╚════╝ ╚════╝ ╚╝   ╚╝  ╚╝
+
+                 E N G I N E
+)";
+
     Application::Application(const std::string& name) {
+
+        Log::init();
+
+        FileSystem::init();
+
+        HELLIX_INFO("HellixEngine initialized successfully!");
         s_instance = this;
         m_window = std::make_unique<Window>(WindowProps(name, 1280, 720));//cria uma janela com smartPointer unique
         m_window->setEventCallback([this](events::Event& e) { this->onEvent(e); });//conecta a janela ao despacho da Hellix
         initQuadPipeline();
+
+        std::cout << banner << '\n';
     }
+
 
     void Application::onEvent(events::Event& e) {
         events::EventDispatcher dispatcher(e);
@@ -45,8 +71,18 @@ namespace hellix::core {
             return onWindowResize(event);
         });
 
-        // Log para depurar se os eventos estão chegando
-        //std::cout << "[Event] " << e.toString() << "\n";
+        // Se tiver um evento MouseScrolledEvent registrado:
+        dispatcher.dispatch<events::MouseScrolledEvent>([](events::MouseScrolledEvent& event) {
+            input::InputManager::getInstance().setMouseWheel(static_cast<int>(event.getYOffset()));
+            return false; // Permite que o evento continue para as camadas
+        });
+
+        for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it) {
+            if (e.handled) break;
+            (*it)->onEvent(e);
+        }
+
+
     }
 
     bool Application::onWindowClose(events::WindowCloseEvent& e) {
@@ -63,6 +99,7 @@ namespace hellix::core {
         cleanupQuadPipeline();
         glfwTerminate();
         s_instance = nullptr;
+        FileSystem::shutdown();
     }
 
     void Application::close() {
@@ -126,6 +163,17 @@ namespace hellix::core {
 
     void Application::run() {
         while (m_running) {
+
+            float time = static_cast<float>(glfwGetTime());
+            Timestep timestep = time - m_lastFrameTime;
+            m_lastFrameTime = time;
+
+            m_window->onUpdate();
+
+            // 3. Atualização de estados e polling do InputManager
+            auto* nativeWindow = static_cast<GLFWwindow*>(m_window->getNativeWindow());
+            input::InputManager::getInstance().update(nativeWindow);
+
             if (m_window->shouldClose()) {
                 m_running = false;
                 break;
@@ -138,11 +186,22 @@ namespace hellix::core {
             glBindVertexArray(m_vao);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-            onUpdate();
+            for (Layer* layer : m_layerStack) {
+                layer->onUpdate(timestep);
+            }
+
+            onUpdate(timestep);
             onRender();
 
-            m_window->onUpdate();
         }
+    }
+
+    void Application::pushLayer(Layer* layer) {
+        m_layerStack.pushLayer(layer);
+    }
+
+    void Application::pushOverlay(Layer* overlay) {
+        m_layerStack.pushOverlay(overlay);
     }
 
 }

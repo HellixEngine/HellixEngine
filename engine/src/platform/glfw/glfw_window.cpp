@@ -4,6 +4,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "engine/core/image.hpp"
+#include "engine/core/log.hpp"
 #include "engine/events/application_event.hpp"
 #include "engine/events/key_event.hpp"
 #include "engine/events/mouse_event.hpp"
@@ -13,7 +15,8 @@ namespace hellix::core {
     static bool s_glfwInitialized = false;
 
     static void glfwErrorCallback(int error, const char* description) {
-        std::cerr << "[HellixCore] GLFW Error (" << error << "): " << description << "\n";
+        HELLIX_ERROR("GLFW Error ({0}): {1}", error, description);
+
     }
 
     void Window::WindowDeleter::operator()(GLFWwindow* window) const {
@@ -22,14 +25,42 @@ namespace hellix::core {
         }
     }
 
+    void Window::setIcon(std::string_view virtualPath) {
+        if (virtualPath.empty()) {
+            // Se o caminho for vazio, restaura o ícone padrão do sistema operacional.
+            glfwSetWindowIcon(m_window.get(), 0, nullptr);
+            return;
+        }
+
+        // GLFW espera a imagem sem inversão vertical e com 4 canais (RGBA).
+        ImageData iconData = ImageLoader::load(virtualPath, false, 4);
+
+        if (!iconData.isValid()) {
+            HELLIX_WARN("GlfwWindow: Não foi possível definir o ícone da janela a partir de: {0}", virtualPath);
+            return;
+        }
+
+        GLFWimage glfwImage;
+        glfwImage.width = iconData.width;
+        glfwImage.height = iconData.height;
+        glfwImage.pixels = iconData.pixels;
+
+        // Aplica o ícone na janela (a API aceita um array; aqui passamos uma imagem).
+        glfwSetWindowIcon(m_window.get(), 1, &glfwImage);
+        HELLIX_INFO("GlfwWindow: Ícone definido com sucesso: {0} ({1}x{2})",
+                         virtualPath, iconData.width, iconData.height);
+
+        // iconData é desalocada automaticamente aqui por RAII.
+    }
+
     Window::Window(const WindowProps& props)
-        : m_data{props.title, props.width, props.height} {
+        : m_data{props.title, props.width, props.height, props.iconPath} {
         
         if (!s_glfwInitialized) {
             int success = glfwInit();
             if (!success) {
                 glfwSetErrorCallback(glfwErrorCallback);
-                std::cerr << "[HellixCore] Falha ao inicializar GLFW!\n";
+                HELLIX_ERROR("Falha ao inicializar GLFW!");
                 return;
             }
             s_glfwInitialized = true;
@@ -48,7 +79,7 @@ namespace hellix::core {
         );
 
         if (!rawWindow) {
-            std::cerr << "[HellixCore] Falha ao criar a janela GLFW!\n";
+            HELLIX_ERROR("Falha ao criar a janela GLFW!");
             return;
         }
 
@@ -56,21 +87,24 @@ namespace hellix::core {
         glfwMakeContextCurrent(rawWindow);
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-            std::cerr << "[HellixCore] Falha ao inicializar GLAD (OpenGL)!\n";
+            HELLIX_ERROR("Falha ao inicializar GLAD!");
             return;
+        }
+
+        // Aplica o ícone se o caminho foi fornecido.
+        if (!m_data.iconPath.empty()) {
+            setIcon(m_data.iconPath);
         }
 
         glViewport(0, 0, static_cast<int>(m_data.width), static_cast<int>(m_data.height));// Define a viewport inicial
         glfwSwapInterval(1); // VSync ativo
 
-        // Associa a struct m_data ao ponteiro interno GLFW da janela
+        // Associa a estrutura m_data ao ponteiro interno GLFW da janela.
         glfwSetWindowUserPointer(rawWindow, &m_data);
 
-        // ==========================================
-        // Registro dos Callbacks GLFW -> Hellix
-        // ==========================================
+        // Registro dos callbacks GLFW -> Hellix.
 
-        // 1. Redimensionamento da Janela
+        // 1. Redimensionamento da janela.
         glfwSetWindowSizeCallback(m_window.get(), [](GLFWwindow* window, int width, int height) {
             auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
             data->width = width;
@@ -82,7 +116,7 @@ namespace hellix::core {
             if (data->eventCallback) data->eventCallback(event);
         });
 
-        // 2. Fechamento da Janela
+        // 2. Fechamento da janela.
         glfwSetWindowCloseCallback(m_window.get(), [](GLFWwindow* window) {
             auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
@@ -90,7 +124,7 @@ namespace hellix::core {
             if (data->eventCallback) data->eventCallback(event);
         });
 
-        // 3. Teclado
+        // 3. Teclado.
         glfwSetKeyCallback(m_window.get(), [](GLFWwindow* window, int key, int scancode, int action, int mods) {
             auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
@@ -113,7 +147,7 @@ namespace hellix::core {
             }
         });
 
-        // 4. Cliques do Mouse
+        // 4. Cliques do mouse.
         glfwSetMouseButtonCallback(m_window.get(), [](GLFWwindow* window, int button, int action, int mods) {
             auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
@@ -132,7 +166,7 @@ namespace hellix::core {
             }
         });
 
-        // 5. Posição do Cursor (Mouse)
+        // 5. Posição do cursor.
         glfwSetCursorPosCallback(m_window.get(), [](GLFWwindow* window, double xpos, double ypos) {
             auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
@@ -140,7 +174,7 @@ namespace hellix::core {
             if (data->eventCallback) data->eventCallback(event);
         });
 
-        // 6. Scroll do Mouse
+        // 6. Rolagem do mouse.
         glfwSetScrollCallback(m_window.get(), [](GLFWwindow* window, double xoffset, double yoffset) {
             auto* data = static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
@@ -165,5 +199,7 @@ namespace hellix::core {
     GLFWwindow* Window::getNativeWindow() const {
         return m_window.get();
     }
+
+
 
 }
