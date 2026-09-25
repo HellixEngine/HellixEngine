@@ -52,7 +52,7 @@ add_library(spdlog INTERFACE)
 
 # Expõe os cabeçalhos para qualquer target que faça link com spdlog
 target_include_directories(spdlog INTERFACE
-        ${CMAKE_CURRENT_SOURCE_DIR}/spdlog/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/SPDLOG/include
 )
 
 # ============================================================
